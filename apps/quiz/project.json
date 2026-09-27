@@ -1,0 +1,86 @@
+{
+  "name": "quiz",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "qz",
+  "sourceRoot": "apps/quiz/src",
+  "tags": ["scope:quiz"],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/quiz",
+        "browser": "apps/quiz/src/main.ts",
+        "tsConfig": "apps/quiz/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/quiz/public"
+          }
+        ],
+        "styles": ["libs/shared/styles/index.scss", "apps/quiz/src/styles.scss"]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 4202,
+        "proxyConfig": "apps/quiz/proxy.conf.json"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "quiz:build:production"
+        },
+        "development": {
+          "buildTarget": "quiz:build:development"
+        }
+      },
+      "dependsOn": [
+        {
+          "projects": ["api"],
+          "target": "serve"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "quiz:build",
+        "port": 4202,
+        "staticFilePath": "dist/apps/quiz/browser",
+        "spa": true
+      }
+    }
+  }
+}

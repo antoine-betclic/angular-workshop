@@ -1,0 +1,113 @@
+{
+  "name": "todo-zone",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "zn",
+  "sourceRoot": "apps/todo-zone/src",
+  "tags": [
+    "scope:zone"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/todo-zone",
+        "browser": "apps/todo-zone/src/main.ts",
+        "polyfills": [
+          "zone.js"
+        ],
+        "tsConfig": "apps/todo-zone/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/todo-zone/public"
+          }
+        ],
+        "styles": [
+          "libs/shared/styles/index.scss",
+          "apps/todo-zone/src/styles.scss"
+        ],
+        "server": "apps/todo-zone/src/main.server.ts",
+        "ssr": {
+          "entry": "apps/todo-zone/src/server.ts"
+        },
+        "outputMode": "server"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "server": false,
+          "ssr": false,
+          "outputMode": "static"
+        },
+        "development-ssr": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 4200
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "todo-zone:build:production"
+        },
+        "development": {
+          "buildTarget": "todo-zone:build:development"
+        },
+        "development-ssr": {
+          "buildTarget": "todo-zone:build:development-ssr"
+        }
+      },
+      "dependsOn": [
+        {
+          "projects": [
+            "api"
+          ],
+          "target": "serve"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "todo-zone:build",
+        "port": 4200,
+        "staticFilePath": "dist/apps/todo-zone/browser",
+        "spa": true
+      }
+    }
+  }
+}

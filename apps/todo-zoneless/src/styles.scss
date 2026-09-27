@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Titres longs : une seule ligne, points de suspension */
+.todo-list .todo-item .title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+}

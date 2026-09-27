@@ -1,0 +1,24 @@
+{
+  "name": "api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/api",
+  "tags": ["scope:shared"],
+  "targets": {
+    "serve": {
+      "continuous": true,
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "json-server apps/api/db.json --port 3000",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "reset": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cp apps/api/db.seed.json apps/api/db.json",
+        "cwd": "{workspaceRoot}"
+      }
+    }
+  }
+}

@@ -1,0 +1,53 @@
+<h1>Tâches</h1>
+
+<div class="toolbar">
+  <input
+    type="search"
+    placeholder="Rechercher…"
+    aria-label="Rechercher une tâche"
+    [value]="store.search()"
+    (input)="onSearch($event)"
+  />
+  <div class="segmented" role="group" aria-label="Filtrer par statut">
+    @for (f of filters; track f.value) {
+      <button
+        type="button"
+        [class.active]="store.filter() === f.value"
+        (click)="store.setFilter(f.value)"
+      >
+        {{ f.label }}
+      </button>
+    }
+  </div>
+  <span class="spacer"></span>
+  @if (reloaded) {
+    <span class="hint">✓ Liste à jour</span>
+  }
+  <a class="btn btn-primary" routerLink="new">Nouvelle tâche</a>
+  <button class="btn" type="button" (click)="reload()">Recharger</button>
+</div>
+
+@switch (store.status()) {
+  @case ('loading') {
+    <p class="loading">Chargement…</p>
+  }
+  @case ('error') {
+    <p class="alert">Erreur : {{ store.error() }}</p>
+  }
+  @default {
+    <div class="todo-list" role="list">
+      @for (todo of store.filtered(); track $index) {
+        <zl-todo-item
+          animate.enter="enter-anim"
+          animate.leave="leave-anim"
+          [todo]="todo"
+          [tagsById]="tags.byId()"
+          (toggled)="store.toggle($event)"
+          (removed)="store.remove($event)"
+        />
+      } @empty {
+        <p class="empty">Aucune tâche</p>
+      }
+    </div>
+  }
+}

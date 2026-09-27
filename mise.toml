@@ -1,0 +1,3 @@
+[tools]
+# pnpm est installé globalement (hors mise) : ne pas le pinner ici.
+node = "24.21.0"

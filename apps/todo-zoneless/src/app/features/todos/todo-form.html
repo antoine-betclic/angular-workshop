@@ -1,0 +1,79 @@
+<h1>{{ isEdit() ? 'Modifier la tâche' : 'Nouvelle tâche' }}</h1>
+
+<form class="card" novalidate (submit)="save($event)">
+  <div class="field" [class.invalid]="todoForm.title().touched() && todoForm.title().invalid()">
+    <label for="title">Titre</label>
+    <input id="title" type="text" [formField]="todoForm.title" />
+    @if (todoForm.title().touched()) {
+      @for (error of todoForm.title().errors(); track error.kind) {
+        <span class="error">{{ error.message }}</span>
+      }
+    }
+  </div>
+
+  <div class="field">
+    <label for="description">Description</label>
+    <textarea id="description" rows="3" [formField]="todoForm.description"></textarea>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="field">
+      <label for="priority">Priorité</label>
+      <select id="priority" [formField]="todoForm.priority">
+        @for (p of priorities; track p) {
+          <option [value]="p">{{ priorityLabels[p] }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="field" [class.invalid]="todoForm.dueDate().touched() && todoForm.dueDate().invalid()">
+      <label for="dueDate">Échéance</label>
+      <input id="dueDate" type="date" [formField]="todoForm.dueDate" />
+      @if (todoForm.dueDate().touched()) {
+        @for (error of todoForm.dueDate().errors(); track error.kind) {
+          <span class="error">{{ error.message }}</span>
+        }
+      }
+    </div>
+  </div>
+
+  <div class="field">
+    <span class="hint">Tags</span>
+    <div class="checks">
+      @for (tag of tagsStore.tags.value(); track tag.id) {
+        <label>
+          <input
+            type="checkbox"
+            [checked]="selectedTags().includes(tag.id)"
+            (change)="toggleTag(tag.id)"
+          />
+          {{ tag.label }}
+        </label>
+      } @empty {
+        @if (tagsStore.tags.isLoading()) {
+          <span class="loading">Chargement des tags…</span>
+        }
+      }
+    </div>
+  </div>
+
+  @if (isEdit()) {
+    <div class="field checks">
+      <label>
+        <input type="checkbox" [formField]="todoForm.done" />
+        Terminée
+      </label>
+    </div>
+  }
+
+  <div class="toolbar">
+    <button
+      class="btn btn-primary"
+      type="submit"
+      [disabled]="todoForm().invalid() || todoForm().submitting()"
+    >
+      Enregistrer
+    </button>
+    <a class="btn btn-ghost" routerLink="/todos">Annuler</a>
+  </div>
+</form>

@@ -1,0 +1,77 @@
+@if (quiz.isLoading()) {
+<p class="loading">Chargement du quiz…</p>
+} @else if (quiz.error()) {
+<p class="alert" role="alert">
+  Impossible de charger le quiz. L'API est-elle démarrée (<code
+    >pnpm nx serve api</code
+  >) ?
+</p>
+} @else if (quiz.hasValue()) {
+<section class="card">
+  <h1>{{ quiz.value().title }}</h1>
+
+  @if (finished()) {
+  <h2>Récapitulatif</h2>
+  <ol class="recap">
+    @for (question of questions(); track question.id) {
+    <li>
+      <p>{{ question.label }}</p>
+      <ul class="recap-choices">
+        @for (choice of question.choices; track choice.id) { @let isSelected =
+        answers()[question.id] === choice.id;
+        <li [class.selected]="isSelected">
+          {{ choice.label }} @if (isSelected) {
+          <span class="sr-only">(votre choix)</span>
+          }
+        </li>
+        }
+      </ul>
+    </li>
+    }
+  </ol>
+  } @else if (current(); as question) {
+  <p class="progress" aria-live="polite">
+    Question {{ index() + 1 }} / {{ questions().length }}
+  </p>
+
+  <fieldset [disabled]="locked()">
+    <legend>{{ question.label }}</legend>
+    @for (choice of question.choices; track choice.id) {
+    <label class="choice" [class.selected]="selected() === choice.id">
+      <input
+        type="radio"
+        [name]="'question-' + question.id"
+        [value]="choice.id"
+        [checked]="selected() === choice.id"
+        (change)="selected.set(choice.id)"
+      />
+      {{ choice.label }}
+    </label>
+    }
+  </fieldset>
+
+  @if (locked()) {
+  <p class="hint">Réponse validée : elle ne peut plus être modifiée.</p>
+  }
+
+  <div class="actions">
+    <button
+      type="button"
+      class="btn"
+      [disabled]="index() === 0"
+      (click)="previous()"
+    >
+      Précédent
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="selected() === null"
+      (click)="next()"
+    >
+      Suivant
+    </button>
+  </div>
+  }
+</section>
+}

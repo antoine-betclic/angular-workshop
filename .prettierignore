@@ -1,0 +1,10 @@
+# Add files here to ignore them from prettier formatting
+/dist
+/coverage
+/.nx/cache
+/.nx/workspace-data
+# Slidev : Prettier casse les frontmatters de slides (--- suivi d'une ligne vide)
+/apps/slides/slides.md
+.angular
+
+.nx/self-healing

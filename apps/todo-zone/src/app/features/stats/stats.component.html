@@ -1,0 +1,42 @@
+<ng-container *ngIf="stats$ | async as stats">
+  <div class="grid grid-4">
+    <div class="card stat">
+      <div class="value">{{ stats.total }}</div>
+      <div class="label">Total</div>
+    </div>
+    <div class="card stat">
+      <div class="value">{{ stats.done }}</div>
+      <div class="label">Terminées</div>
+    </div>
+    <div class="card stat">
+      <div class="value">{{ stats.active }}</div>
+      <div class="label">À faire</div>
+    </div>
+    <div class="card stat">
+      <div class="value">{{ stats.overdue }}</div>
+      <div class="label">En retard</div>
+    </div>
+  </div>
+
+  <section class="card">
+    <h3>Taux de complétion</h3>
+    <p>{{ stats.completionRate }} %</p>
+    <div class="bar" role="progressbar" [attr.aria-valuenow]="stats.completionRate" aria-valuemin="0" aria-valuemax="100">
+      <span [style.width.%]="stats.completionRate"></span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Répartition par priorité</h3>
+    <div *ngFor="let p of priorities" class="field">
+      <div class="toolbar">
+        <span class="badge" [ngClass]="p">{{ priorityLabels[p] }}</span>
+        <span class="spacer"></span>
+        <span>{{ stats.byPriority[p] }}</span>
+      </div>
+      <div class="bar">
+        <span [style.width.%]="percent(stats.byPriority[p], stats.total)"></span>
+      </div>
+    </div>
+  </section>
+</ng-container>

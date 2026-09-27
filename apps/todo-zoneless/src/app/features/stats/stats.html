@@ -1,0 +1,35 @@
+<h1>Statistiques</h1>
+
+<div class="grid grid-4">
+  <div class="card stat">
+    <div class="value">{{ stats().total }}</div>
+    <div class="label">Total</div>
+  </div>
+  <div class="card stat">
+    <div class="value">{{ stats().done }}</div>
+    <div class="label">Terminées</div>
+  </div>
+  <div class="card stat">
+    <div class="value">{{ stats().active }}</div>
+    <div class="label">À faire</div>
+  </div>
+  <div class="card stat">
+    <div class="value">{{ stats().overdue }}</div>
+    <div class="label">En retard</div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Taux de complétion</h3>
+  <div class="bar"><span [style.width.%]="stats().completionRate"></span></div>
+  <p class="hint">{{ stats().completionRate }} % des tâches sont terminées.</p>
+</div>
+
+@defer (hydrate on viewport) {
+  <zl-priority-breakdown [byPriority]="stats().byPriority" [total]="stats().total" />
+} @placeholder {
+  <div class="card">
+    <h3>Répartition par priorité</h3>
+    <p class="loading">Chargement…</p>
+  </div>
+}

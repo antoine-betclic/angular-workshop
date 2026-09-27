@@ -1,0 +1,36 @@
+/* Styles globaux Slidev (chargé automatiquement).
+   `class: dense` dans le frontmatter d'une slide est appliqué au layout OU aux colonnes (two-cols). */
+.dense pre,
+.dense .slidev-code,
+.slidev-layout.dense pre {
+  font-size: 0.6em !important;
+  line-height: 1.3 !important;
+}
+.dense pre {
+  padding: 0.45em 0.7em !important;
+  margin: 0.35em 0 !important;
+}
+.dense ul,
+.dense ol,
+.dense p {
+  font-size: 0.85em;
+}
+.dense li {
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+.dense h1 {
+  font-size: 1.6em;
+  margin-bottom: 0.4em;
+}
+.dense h3 {
+  margin-top: 0.4em;
+}
+.slidev-layout table {
+  font-size: 0.72em;
+  line-height: 1.3;
+}
+.slidev-layout table td,
+.slidev-layout table th {
+  padding: 0.3em 0.5em;
+}

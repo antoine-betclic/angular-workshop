@@ -1,0 +1,44 @@
+<section class="toolbar">
+  <input
+    type="search"
+    placeholder="Rechercher…"
+    aria-label="Rechercher une tâche"
+    [value]="search$ | async"
+    (input)="onSearch($event)"
+  />
+  <div class="segmented" role="group" aria-label="Filtrer par statut">
+    <button
+      *ngFor="let f of filters"
+      type="button"
+      [class.active]="(filter$ | async) === f.value"
+      (click)="setFilter(f.value)"
+    >
+      {{ f.label }}
+    </button>
+  </div>
+  <span class="spacer"></span>
+  <a class="btn btn-primary" routerLink="/todos/new">Nouvelle tâche</a>
+  <button class="btn" type="button" (click)="reload()">Recharger</button>
+</section>
+
+<ng-container [ngSwitch]="status$ | async">
+  <p class="loading" *ngSwitchCase="'loading'">Chargement…</p>
+  <div class="alert" *ngSwitchCase="'error'" role="alert">
+    Impossible de charger les tâches : {{ error$ | async }}
+  </div>
+  <ng-container *ngSwitchDefault>
+    <ng-container *ngIf="todos$ | async as todos">
+      <p class="empty" *ngIf="todos.length === 0">Aucune tâche</p>
+      <ul class="todo-list" *ngIf="todos.length > 0">
+        <zn-todo-item
+          *ngFor="let todo of todos; trackBy: trackById"
+          @itemAnim
+          [todo]="todo"
+          [tagsById]="(tagsById$ | async) ?? {}"
+          (toggled)="toggle($event)"
+          (removed)="remove($event)"
+        ></zn-todo-item>
+      </ul>
+    </ng-container>
+  </ng-container>
+</ng-container>

@@ -1,0 +1,24 @@
+<h1>Labo de change detection — zoneless</h1>
+<p>
+  Pas de zone.js : aucun monkey-patching des API async. Angular ne planifie un rendu que lorsqu'un
+  <strong>signal lu par un template change</strong>, qu'un <strong>événement déclaré dans un template</strong>
+  se produit, ou qu'on appelle <code>markForCheck()</code>. Chaque carte compte ses propres rendus et flashe.
+</p>
+
+<div class="grid grid-2">
+  <zl-signal-card heading="Signal" mode="signal" (logged)="addLog($event)" />
+  <zl-signal-card heading="Piège : champ non-signal" mode="plain" (logged)="addLog($event)" />
+  <zl-signal-card heading="Événements" mode="events" (logged)="addLog($event)" />
+</div>
+
+<div class="lab-actions">
+  <button class="btn btn-ghost" type="button" (click)="resetAll()">Tout réinitialiser</button>
+</div>
+
+<div class="lab-log" aria-live="polite">
+  @for (line of log(); track $index) {
+    <div>{{ line }}</div>
+  } @empty {
+    <div>Aucun événement pour l'instant.</div>
+  }
+</div>

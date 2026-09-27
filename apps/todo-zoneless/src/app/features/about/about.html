@@ -1,0 +1,36 @@
+<h1>À propos — todo-zoneless</h1>
+<p>
+  Cette page est <strong>prerendue au build</strong> (<code>RenderMode.Prerender</code>) : elle ne dépend pas de l'API.
+  L'app est écrite en Angular « moderne » : zoneless, standalone, signals.
+</p>
+
+<section class="card">
+  <h3>Stack</h3>
+  <ul>
+    @for (item of stack; track item) {
+      <li>{{ item }}</li>
+    }
+  </ul>
+</section>
+
+<section class="card">
+  <h3>Approche zoneless / signals</h3>
+  <div class="grid grid-2">
+    <div>
+      <h2>Avantages</h2>
+      <ul>
+        @for (item of pros; track item) {
+          <li>{{ item }}</li>
+        }
+      </ul>
+    </div>
+    <div>
+      <h2>Inconvénients</h2>
+      <ul>
+        @for (item of cons; track item) {
+          <li>{{ item }}</li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>

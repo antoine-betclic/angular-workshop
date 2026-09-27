@@ -1,0 +1,9 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "api", "runtimeExecutable": "pnpm", "runtimeArgs": ["nx", "serve", "api"], "port": 3000 },
+    { "name": "todo-zone", "runtimeExecutable": "pnpm", "runtimeArgs": ["nx", "serve", "todo-zone"], "port": 4200 },
+    { "name": "todo-zoneless", "runtimeExecutable": "pnpm", "runtimeArgs": ["nx", "serve", "todo-zoneless"], "port": 4201 },
+    { "name": "slides", "runtimeExecutable": "pnpm", "runtimeArgs": ["exec", "slidev", "apps/slides/slides.md", "--port", "3030"], "port": 3030 }
+  ]
+}

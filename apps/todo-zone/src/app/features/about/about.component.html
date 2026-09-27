@@ -1,0 +1,36 @@
+<section class="card">
+  <h2>À propos de cette application</h2>
+  <p>
+    Cette todo-list est écrite volontairement « à l’ancienne », dans le style Angular 2 → 15,
+    mais elle tourne sur Angular 22. Elle sert de point de comparaison avec l’application
+    <code>todo-zoneless</code>, qui a le même périmètre fonctionnel en style moderne.
+  </p>
+  <p>Cette page est <strong>prerendue au build</strong> (<code>RenderMode.Prerender</code>) : son HTML est statique.</p>
+  <table class="versions">
+    <tr><th>Angular</th><td>22.1</td></tr>
+    <tr><th>Nx</th><td>23</td></tr>
+    <tr><th>zone.js</th><td>oui</td></tr>
+  </table>
+</section>
+
+<section class="card">
+  <h3>Stack</h3>
+  <ul>
+    <li *ngFor="let item of stack">{{ item }}</li>
+  </ul>
+</section>
+
+<section class="grid grid-2">
+  <div class="card">
+    <h3>Avantages</h3>
+    <ul>
+      <li *ngFor="let item of pros">{{ item }}</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Inconvénients</h3>
+    <ul>
+      <li *ngFor="let item of cons">{{ item }}</li>
+    </ul>
+  </div>
+</section>

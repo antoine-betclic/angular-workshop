@@ -1,0 +1,22 @@
+<div class="app-shell">
+  <header class="app-header">
+    <a class="brand" routerLink="/todos"><span class="dot"></span> Angular Workshop</a>
+    <nav>
+      <a routerLink="/todos" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Tâches</a>
+      <a routerLink="/todos/new" routerLinkActive="active">Nouvelle tâche</a>
+      <a routerLink="/stats" routerLinkActive="active">Statistiques</a>
+      <a routerLink="/lab" routerLinkActive="active">Labo CD</a>
+      <a routerLink="/about" routerLinkActive="active">À propos</a>
+    </nav>
+    <span class="engine zone">zone.js</span>
+  </header>
+
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="app-footer">
+    Angular 22 · zone.js · NgModules · NgRx store/effects · Reactive Forms · SSR — {{ year }} ·
+    {{ now | date: 'HH:mm:ss' }}
+  </footer>
+</div>

@@ -1,0 +1,58 @@
+<section class="card">
+  <h2>{{ isEdit ? 'Modifier la tâche' : 'Nouvelle tâche' }}</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="field" [class.invalid]="showError('title')">
+      <label for="title">Titre</label>
+      <input id="title" type="text" formControlName="title" placeholder="Ex. : Passer les composants en OnPush" />
+      <span class="error" *ngIf="showError('title')">
+        <ng-container *ngIf="form.controls.title.errors?.['required']">Le titre est requis.</ng-container>
+        <ng-container *ngIf="form.controls.title.errors?.['minlength']">3 caractères minimum.</ng-container>
+      </span>
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea id="description" rows="3" formControlName="description"></textarea>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="field">
+        <label for="priority">Priorité</label>
+        <select id="priority" formControlName="priority">
+          <option *ngFor="let p of priorities" [value]="p">{{ priorityLabels[p] }}</option>
+        </select>
+      </div>
+
+      <div class="field" [class.invalid]="showError('dueDate')">
+        <label for="dueDate">Échéance</label>
+        <input id="dueDate" type="date" formControlName="dueDate" />
+        <span class="error" *ngIf="showError('dueDate')">L'échéance est requise.</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="tag-0">Tags</label>
+      <div class="checks" formArrayName="tags">
+        <label *ngFor="let tag of tags; let i = index">
+          <input type="checkbox" [id]="'tag-' + i" [formControlName]="i" />
+          {{ tag.label }}
+        </label>
+        <span class="hint" *ngIf="tags.length === 0">Chargement des tags…</span>
+      </div>
+    </div>
+
+    <div class="field" *ngIf="isEdit">
+      <div class="checks">
+        <label><input type="checkbox" formControlName="done" /> Terminée</label>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Enregistrer</button>
+      <a class="btn btn-ghost" routerLink="/todos">Annuler</a>
+      <span class="spacer"></span>
+      <span class="hint" *ngIf="form.dirty && !saved">Modifications non enregistrées</span>
+    </div>
+  </form>
+</section>

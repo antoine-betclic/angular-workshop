@@ -1,0 +1,115 @@
+{
+  "name": "todo-zoneless",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "zl",
+  "sourceRoot": "apps/todo-zoneless/src",
+  "tags": [
+    "scope:zoneless"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/todo-zoneless",
+        "browser": "apps/todo-zoneless/src/main.ts",
+        "tsConfig": "apps/todo-zoneless/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/todo-zoneless/public"
+          }
+        ],
+        "styles": [
+          "libs/shared/styles/index.scss",
+          "apps/todo-zoneless/src/styles.scss"
+        ],
+        "server": "apps/todo-zoneless/src/main.server.ts",
+        "ssr": {
+          "entry": "apps/todo-zoneless/src/server.ts"
+        },
+        "outputMode": "server",
+        "security": {
+          "allowedHosts": [
+            "localhost"
+          ]
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "server": false,
+          "ssr": false,
+          "outputMode": "static"
+        },
+        "development-ssr": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 4201
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "todo-zoneless:build:production"
+        },
+        "development": {
+          "buildTarget": "todo-zoneless:build:development"
+        },
+        "development-ssr": {
+          "buildTarget": "todo-zoneless:build:development-ssr"
+        }
+      },
+      "dependsOn": [
+        {
+          "projects": [
+            "api"
+          ],
+          "target": "serve"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "todo-zoneless:build",
+        "port": 4201,
+        "staticFilePath": "dist/apps/todo-zoneless/browser",
+        "spa": true
+      }
+    }
+  }
+}

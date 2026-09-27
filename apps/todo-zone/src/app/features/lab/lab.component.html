@@ -1,0 +1,79 @@
+<section class="card">
+  <h2>Labo de change detection — zone.js</h2>
+  <p>
+    Avec zone.js, <strong>n'importe quel</strong> événement (clic, timer,
+    requête HTTP, et même ce <code>mousemove</code> écouté sur
+    <code>document</code> par la page) déclenche une change detection de
+    <em>toute</em> l'application. Une carte <code>Default</code> est alors
+    toujours re-rendue ; une carte <code>OnPush</code> seulement si la référence
+    d'un <code>@Input</code> a changé, si un événement part de sa vue, ou si
+    <code>markForCheck()</code> a été appelé.
+  </p>
+  <p>
+    Bougez la souris au-dessus de la page et regardez le compteur de la carte
+    Default s'emballer.
+    <code>tick</code> = <strong>{{ tick }}</strong>
+  </p>
+  <div class="lab-actions">
+    <button class="btn" type="button" (click)="mutate()">
+      Muter l’objet (person.clicks++)
+    </button>
+    <button class="btn" type="button" (click)="replace()">
+      Remplacer la référence ({{ '{' }}...person{{ '}' }})
+    </button>
+    <button class="btn" type="button" (click)="timeout()">
+      setTimeout hors template (tick++)
+    </button>
+    <button class="btn" type="button" (click)="outsideZone()">
+      runOutsideAngular + tick++
+    </button>
+    <button class="btn btn-primary" type="button" (click)="detectNow()">
+      Détecter maintenant (appRef.tick())
+    </button>
+    <span class="spacer"></span>
+    <button class="btn btn-ghost" type="button" (click)="reset()">
+      Réinitialiser
+    </button>
+  </div>
+</section>
+
+<div class="grid grid-2">
+  <div>
+    <zn-default-card
+      [person]="person"
+      (logged)="addLog($event)"
+    ></zn-default-card>
+  </div>
+  <div>
+    <zn-onpush-card
+      #onpush
+      [person]="person"
+      (logged)="addLog($event)"
+    ></zn-onpush-card>
+    <!-- hors de la carte, et journal écrit par le parent : un clic dans sa vue ou un @Output émis la marquerait dirty -->
+    <div class="lab-actions">
+      <button
+        class="btn btn-sm"
+        type="button"
+        (click)="timeoutWithoutMark(onpush)"
+      >
+        setTimeout(local++) sans markForCheck
+      </button>
+      <button
+        class="btn btn-sm"
+        type="button"
+        (click)="timeoutWithMark(onpush)"
+      >
+        setTimeout(local++) + markForCheck()
+      </button>
+    </div>
+  </div>
+</div>
+
+<section class="card">
+  <h3>Journal (10 derniers événements)</h3>
+  <div class="lab-log">
+    <div *ngIf="log.length === 0">Cliquez sur un bouton…</div>
+    <div *ngFor="let line of log">{{ line }}</div>
+  </div>
+</section>

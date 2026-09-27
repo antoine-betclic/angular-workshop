@@ -1,0 +1,22 @@
+<input
+  type="checkbox"
+  [checked]="todo().done"
+  (change)="toggled.emit(todo().id)"
+  [attr.aria-label]="'Marquer « ' + todo().title + ' » comme ' + (todo().done ? 'à faire' : 'terminée')"
+/>
+<div>
+  <div class="title">{{ todo().title }}</div>
+  <div class="meta">
+    <span [class]="['badge', todo().priority]">{{ priorityLabel() }}</span>
+    <span>{{ todo().dueDate | relativeDue }}</span>
+    @for (tag of tags(); track tag.id) {
+      <zl-tag-chip [color]="tag.color">{{ tag.label }}</zl-tag-chip>
+    }
+  </div>
+</div>
+<div class="actions">
+  <a class="btn btn-sm" [routerLink]="['/todos', todo().id]">Éditer</a>
+  <button class="btn btn-sm btn-danger" type="button" (click)="removed.emit(todo().id)">
+    Supprimer
+  </button>
+</div>

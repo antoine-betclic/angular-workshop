@@ -1,0 +1,10 @@
+{{ counter.track() }}
+<h3>Default</h3>
+<div class="render-count">0</div>
+<div class="render-label">rendus du template</div>
+<p>
+  <strong>{{ person.name }}</strong> · clicks : <code>{{ person.clicks }}</code> · local : <code>{{ local }}</code>
+</p>
+<div class="lab-actions">
+  <button class="btn btn-sm" type="button" (click)="onLocalClick()">Événement dans l’enfant (local++)</button>
+</div>

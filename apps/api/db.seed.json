@@ -1,0 +1,171 @@
+{
+  "todos": [
+    {
+      "id": "1",
+      "title": "Migrer le module Auth en standalone",
+      "description": "Supprimer AuthModule, passer les composants en standalone et utiliser inject().",
+      "done": true,
+      "priority": "high",
+      "dueDate": "2026-09-01",
+      "tags": ["migration", "angular"],
+      "createdAt": "2026-08-20T09:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "title": "Passer les composants en OnPush",
+      "description": "Pré-requis avant zoneless : lancer l'outil onpush_zoneless_migration du MCP Angular.",
+      "done": false,
+      "priority": "high",
+      "dueDate": "2026-09-25",
+      "tags": ["migration", "perf"],
+      "createdAt": "2026-09-01T10:30:00.000Z"
+    },
+    {
+      "id": "3",
+      "title": "Remplacer les BehaviorSubject par des signals",
+      "description": "Dans les services d'état, exposer des signal()/computed() au lieu d'Observables.",
+      "done": false,
+      "priority": "medium",
+      "dueDate": "2026-10-10",
+      "tags": ["signals", "angular"],
+      "createdAt": "2026-09-05T14:00:00.000Z"
+    },
+    {
+      "id": "4",
+      "title": "Activer l'hydratation incrémentale",
+      "description": "Ajouter withIncrementalHydration() et des blocs @defer (hydrate on viewport).",
+      "done": false,
+      "priority": "medium",
+      "dueDate": "2026-09-15",
+      "tags": ["ssr", "perf"],
+      "createdAt": "2026-09-06T08:15:00.000Z"
+    },
+    {
+      "id": "5",
+      "title": "Convertir le formulaire de profil en Signal Forms",
+      "description": "form() + FormField, validation required/email dans le schéma.",
+      "done": false,
+      "priority": "low",
+      "dueDate": "2026-11-02",
+      "tags": ["forms", "signals"],
+      "createdAt": "2026-09-10T16:45:00.000Z"
+    },
+    {
+      "id": "6",
+      "title": "Supprimer zone.js du bundle",
+      "description": "Retirer le polyfill zone.js et vérifier le poids du bundle initial.",
+      "done": false,
+      "priority": "urgent",
+      "dueDate": "2026-09-20",
+      "tags": ["perf", "migration"],
+      "createdAt": "2026-09-12T11:00:00.000Z"
+    },
+    {
+      "id": "7",
+      "title": "Écrire les tests Vitest du store",
+      "description": "Couvrir le reducer (legacy) et le signalStore (moderne).",
+      "done": true,
+      "priority": "low",
+      "dueDate": "2026-09-08",
+      "tags": ["tests"],
+      "createdAt": "2026-09-02T09:00:00.000Z"
+    },
+    {
+      "id": "8",
+      "title": "Préparer la démo AI Tutor",
+      "description": "Configurer .mcp.json, créer le playground ng new et répéter le script.",
+      "done": false,
+      "priority": "medium",
+      "dueDate": "2026-09-28",
+      "tags": ["ai"],
+      "createdAt": "2026-09-14T13:20:00.000Z"
+    }
+  ],
+  "tags": [
+    { "id": "migration", "label": "Migration", "color": "#f97316" },
+    { "id": "angular", "label": "Angular", "color": "#dd0031" },
+    { "id": "perf", "label": "Performance", "color": "#22c55e" },
+    { "id": "signals", "label": "Signals", "color": "#8b5cf6" },
+    { "id": "ssr", "label": "SSR", "color": "#0ea5e9" },
+    { "id": "forms", "label": "Forms", "color": "#eab308" },
+    { "id": "tests", "label": "Tests", "color": "#64748b" },
+    { "id": "ai", "label": "IA", "color": "#ec4899" }
+  ],
+  "quiz": [
+    {
+      "id": "1",
+      "title": "De zone.js aux signals",
+      "questions": [
+        {
+          "id": "1",
+          "label": "Quelles sont les deux grandes ruptures de paradigme dans l'histoire d'Angular ?",
+          "choices": [
+            { "id": "a", "label": "2010 (AngularJS) et 2020 (Ivy)" },
+            {
+              "id": "b",
+              "label": "2016 (zone.js + RxJS) et 2023–2026 (signals + zoneless)"
+            },
+            {
+              "id": "c",
+              "label": "2016 (NgModules) et 2022 (standalone components)"
+            },
+            { "id": "d", "label": "2020 (Ivy) et 2026 (Signal Forms)" }
+          ]
+        },
+        {
+          "id": "2",
+          "label": "Dans ce monorepo Nx, quel mécanisme empêche todo-zone d'importer du code de todo-zoneless ?",
+          "choices": [
+            { "id": "a", "label": "Les alias paths de tsconfig.base.json" },
+            { "id": "b", "label": "Les workspaces pnpm" },
+            {
+              "id": "c",
+              "label": "Les tags scope:* et la règle @nx/enforce-module-boundaries"
+            },
+            { "id": "d", "label": "La commande nx affected" }
+          ]
+        },
+        {
+          "id": "3",
+          "label": "Vrai ou faux : en Angular 22, un composant qui ne déclare pas changeDetection utilise la stratégie Default.",
+          "choices": [
+            { "id": "a", "label": "Vrai" },
+            { "id": "b", "label": "Faux" }
+          ]
+        },
+        {
+          "id": "4",
+          "label": "Dans une app zone.js, que déclenche document.addEventListener('mousemove', () => {}) ?",
+          "choices": [
+            { "id": "a", "label": "Rien : le handler est vide" },
+            {
+              "id": "b",
+              "label": "Un tick() sur tout l'arbre de composants à chaque mouvement"
+            },
+            {
+              "id": "c",
+              "label": "Un rendu du seul composant qui a enregistré le listener"
+            },
+            {
+              "id": "d",
+              "label": "Une erreur ExpressionChangedAfterItHasBeenCheckedError"
+            }
+          ]
+        },
+        {
+          "id": "5",
+          "label": "Dans l'app zoneless, setTimeout(() => this.plain++) ne rafraîchit pas l'écran. Comment corriger ?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Stocker la valeur dans un signal (ou appeler markForCheck())"
+            },
+            { "id": "b", "label": "Remplacer setTimeout par setInterval" },
+            { "id": "c", "label": "Déclarer ChangeDetectionStrategy.OnPush" },
+            { "id": "d", "label": "Appeler setTimeout dans le constructeur" }
+          ]
+        }
+      ]
+    }
+  ]
+}
