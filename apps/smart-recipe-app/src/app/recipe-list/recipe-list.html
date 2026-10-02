@@ -1,0 +1,30 @@
+<header class="header">
+  <h1>{{ title() }}</h1>
+  <a matButton="filled" routerLink="/recipes/new">Add a recipe</a>
+</header>
+
+<mat-form-field class="search" appearance="outline">
+  <mat-label>Search recipes</mat-label>
+  <input
+    matInput
+    type="search"
+    [ngModel]="searchTerm()"
+    (ngModelChange)="searchTerm.set($event)"
+  />
+</mat-form-field>
+
+<ul class="recipes">
+  @for (recipe of filteredRecipes(); track recipe.id) {
+  <li>
+    <a class="recipe" [routerLink]="['/recipes', recipe.id]">
+      <img [src]="recipe.imgUrl" alt="" width="96" height="60" />
+      <span class="name">{{ recipe.name }}</span>
+      @if (recipe.isFavorite) {
+      <span class="favorite" [attr.aria-label]="'Favorite recipe'">★</span>
+      }
+    </a>
+  </li>
+  } @empty {
+  <li class="empty">No recipe matches “{{ searchTerm() }}”.</li>
+  }
+</ul>

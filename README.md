@@ -8,6 +8,7 @@ Démo « 10 ans d'évolution d'Angular » : une même todo-list, deux moteurs.
 | `apps/todo-zoneless` | 4201 | zoneless, standalone, signals, `@ngrx/signals`, `httpResource`, Signal Forms, `animate.enter`, SSR + hydratation incrémentale |
 | `apps/api` | 3000 | json-server (`/todos`, `/tags`, `/quiz`) |
 | `apps/quiz` | 4202 | quiz QCM de la présentation (zoneless, `httpResource` sur `/api/quiz/1`, sans les réponses) |
+| `apps/smart-recipe-app` | 4203 | « Smart Recipe Box » de l'[AI Tutor](https://angular.dev/ai/ai-tutor), amenée à la fin de la phase 4 (Reactive Forms + Material) : point de départ de la phase 5, Signal Forms |
 | `apps/slides` | 3030 | Slidev (trame du workshop, 1 h 30, français) |
 
 Les deux apps sont en **Angular 22.1** : `todo-zone` est écrite volontairement dans le style historique. Seuls `libs/shared/models` (types) et `libs/shared/styles` (CSS) sont partagés, pour que la comparaison porte uniquement sur le moteur.
@@ -28,7 +29,7 @@ pnpm demo          # api + todo-zone + todo-zoneless (données réinitialisées)
 pnpm slides        # deck Slidev sur http://localhost:3030
 ```
 
-Commandes unitaires : `pnpm nx serve api|todo-zone|todo-zoneless|slides`, `pnpm nx serve todo-zoneless -c development-ssr` (SSR en dev ; `serve` seul tourne en CSR), `pnpm nx run api:reset` (restaure `db.seed.json`), `pnpm nx run-many -t build test lint`.
+Commandes unitaires : `pnpm nx serve api|todo-zone|todo-zoneless|smart-recipe-app|slides`, `pnpm nx serve todo-zoneless -c development-ssr` (SSR en dev ; `serve` seul tourne en CSR), `pnpm nx run api:reset` (restaure `db.seed.json`), `pnpm nx run-many -t build test lint`.
 
 SSR en production :
 
@@ -45,7 +46,7 @@ curl -s localhost:4001/todos | grep -o 'todo-item' | wc -l
 1. `/lab` sur les deux apps : compteur de rendus, `Default` vs `OnPush` vs signals.
 2. `/todos`, `/todos/new`, `/stats` : même UI, code côte à côte (store, formulaire, HTTP).
 3. SSR : `curl` + onglet Network sur `/stats` (bloc `@defer (hydrate on viewport)`).
-4. IA : skill, MCP `angular-cli` (`onpush_zoneless_migration`), AI Tutor sur une app Nx générée pour l'occasion. Script : [docs/demo-ai-tutor.md](docs/demo-ai-tutor.md).
+4. IA : skill, MCP `angular-cli` (`onpush_zoneless_migration`), AI Tutor sur `apps/smart-recipe-app` (phase 5, Signal Forms). Script : [docs/demo-ai-tutor.md](docs/demo-ai-tutor.md).
 
 ## Documentation
 

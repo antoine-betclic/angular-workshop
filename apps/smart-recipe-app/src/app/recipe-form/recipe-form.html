@@ -1,0 +1,36 @@
+<a matButton routerLink="/recipes">← Back to recipes</a>
+
+<h1>New recipe</h1>
+
+<form class="form" [formGroup]="recipeForm" (ngSubmit)="save()">
+  <mat-form-field appearance="outline">
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="name" required />
+    @if (recipeForm.controls.name.hasError('required')) {
+    <mat-error>Recipe name is required.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Description</mat-label>
+    <textarea
+      matInput
+      formControlName="description"
+      rows="3"
+      required
+    ></textarea>
+    @if (recipeForm.controls.description.hasError('required')) {
+    <mat-error>Description is required.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Image URL</mat-label>
+    <input matInput type="url" formControlName="imgUrl" />
+    <mat-hint>Optional — a placeholder is used otherwise.</mat-hint>
+  </mat-form-field>
+
+  <div class="actions">
+    <button matButton="filled" type="submit">Save recipe</button>
+  </div>
+</form>

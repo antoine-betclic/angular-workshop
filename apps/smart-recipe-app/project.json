@@ -1,0 +1,86 @@
+{
+  "name": "smart-recipe-app",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/smart-recipe-app/src",
+  "tags": ["scope:smart-recipe"],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/smart-recipe-app",
+        "browser": "apps/smart-recipe-app/src/main.ts",
+        "tsConfig": "apps/smart-recipe-app/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/smart-recipe-app/public"
+          }
+        ],
+        "styles": ["apps/smart-recipe-app/src/styles.scss"]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 4203,
+        "proxyConfig": "apps/smart-recipe-app/proxy.conf.json"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "smart-recipe-app:build:production"
+        },
+        "development": {
+          "buildTarget": "smart-recipe-app:build:development"
+        }
+      },
+      "dependsOn": [
+        {
+          "projects": ["api"],
+          "target": "serve"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "smart-recipe-app:build",
+        "port": 4203,
+        "staticFilePath": "dist/apps/smart-recipe-app/browser",
+        "spa": true
+      }
+    }
+  }
+}

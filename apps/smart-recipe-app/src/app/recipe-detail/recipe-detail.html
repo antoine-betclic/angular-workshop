@@ -1,0 +1,59 @@
+<a matButton routerLink="/recipes">← Back to recipes</a>
+
+@if (recipe(); as recipe) {
+<article class="recipe">
+  <img
+    class="picture"
+    [src]="recipe.imgUrl"
+    [alt]="recipe.name"
+    width="640"
+    height="400"
+  />
+
+  <div class="content">
+    <h1 class="name">
+      {{ recipe.name }} @if (recipe.isFavorite) {
+      <span class="favorite" [attr.aria-label]="'Favorite recipe'">★</span>
+      }
+    </h1>
+    <p class="description">{{ recipe.description }}</p>
+
+    <div class="servings" role="group" [attr.aria-label]="'Servings'">
+      <button
+        matButton="outlined"
+        type="button"
+        [attr.aria-label]="'Decrease servings'"
+        [disabled]="servings() <= 1"
+        (click)="decreaseServings()"
+      >
+        −
+      </button>
+      <span aria-live="polite">{{ servings() }} serving(s)</span>
+      <button
+        matButton="outlined"
+        type="button"
+        [attr.aria-label]="'Increase servings'"
+        (click)="increaseServings()"
+      >
+        +
+      </button>
+    </div>
+
+    <h2>Ingredients</h2>
+    <ul class="ingredients">
+      @for (ingredient of adjustedIngredients(); track ingredient.name) {
+      <li>
+        <span>{{ ingredient.name }}</span>
+        <span class="quantity"
+          >{{ ingredient.quantity }} {{ ingredient.unit }}</span
+        >
+      </li>
+      } @empty {
+      <li>No ingredients yet.</li>
+      }
+    </ul>
+  </div>
+</article>
+} @else {
+<p class="not-found">Recipe not found.</p>
+}

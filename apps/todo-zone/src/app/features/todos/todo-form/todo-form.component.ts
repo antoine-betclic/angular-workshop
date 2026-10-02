@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { startWith, take } from 'rxjs/operators';
 import {
   PRIORITIES,
   Priority,
@@ -13,6 +13,7 @@ import {
 } from '@angular-workshop/shared/models';
 import { PRIORITY_LABELS } from '../../../shared/priority-labels';
 import { selectAllTags, selectTagsLoaded, TagsActions, TodoActions } from '../../../store';
+import { URGENT_MAX_DAYS, urgentDueDateValidator } from './todo-form.validators';
 
 @Component({
   selector: 'zn-todo-form',
@@ -26,19 +27,23 @@ export class TodoFormComponent implements OnInit, OnDestroy {
   readonly isEdit: boolean;
   readonly priorities = PRIORITIES;
   readonly priorityLabels = PRIORITY_LABELS;
+  readonly urgentMaxDays = URGENT_MAX_DAYS;
 
   /** Tags disponibles, dans le même ordre que le FormArray `tags`. */
   tags: Tag[] = [];
   saved = false;
 
-  readonly form = this.fb.nonNullable.group({
-    title: ['', [Validators.required, Validators.minLength(3)]],
-    description: [''],
-    priority: ['medium' as Priority],
-    dueDate: ['', Validators.required],
-    done: [false],
-    tags: this.fb.nonNullable.array<boolean>([]),
-  });
+  readonly form = this.fb.nonNullable.group(
+    {
+      title: ['', [Validators.required, Validators.minLength(3)]],
+      description: [''],
+      priority: ['medium' as Priority],
+      dueDate: ['', Validators.required],
+      done: [false],
+      tags: this.fb.nonNullable.array<boolean>([]),
+    },
+    { validators: urgentDueDateValidator },
+  );
 
   /** Boilerplate historique : on collecte les souscriptions pour les libérer dans ngOnDestroy. */
   private readonly subscription = new Subscription();
@@ -58,6 +63,22 @@ export class TodoFormComponent implements OnInit, OnDestroy {
       const { title, description, priority, dueDate, done } = this.todo;
       this.form.patchValue({ title, description, priority, dueDate, done });
     }
+
+    // Validation conditionnelle « à l'ancienne » : on (dé)branche le validateur à la main,
+    // puis on force la revalidation. À ne pas oublier de désabonner.
+    this.subscription.add(
+      this.form.controls.priority.valueChanges
+        .pipe(startWith(this.form.controls.priority.value))
+        .subscribe((priority) => {
+          const description = this.form.controls.description;
+          if (priority === 'high') {
+            description.setValidators(Validators.required);
+          } else {
+            description.clearValidators();
+          }
+          description.updateValueAndValidity();
+        }),
+    );
 
     this.subscription.add(
       this.store
@@ -83,9 +104,19 @@ export class TodoFormComponent implements OnInit, OnDestroy {
     return this.form.controls.tags.controls;
   }
 
-  showError(name: 'title' | 'dueDate'): boolean {
+  showError(name: 'title' | 'description' | 'dueDate'): boolean {
     const control = this.form.controls[name];
     return control.invalid && (control.touched || control.dirty);
+  }
+
+  get descriptionRequired(): boolean {
+    return this.form.controls.description.hasValidator(Validators.required);
+  }
+
+  /** L'erreur croisée est portée par le groupe : on la rattache à l'échéance pour l'affichage. */
+  get showUrgentError(): boolean {
+    const dueDate = this.form.controls.dueDate;
+    return this.form.hasError('urgentTooLate') && (dueDate.touched || dueDate.dirty);
   }
 
   canLeave(): boolean {

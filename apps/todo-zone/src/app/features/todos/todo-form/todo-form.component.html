@@ -11,9 +11,12 @@
       </span>
     </div>
 
-    <div class="field">
-      <label for="description">Description</label>
-      <textarea id="description" rows="3" formControlName="description"></textarea>
+    <div class="field" [class.invalid]="showError('description')">
+      <label for="description">
+        Description <span aria-hidden="true" *ngIf="descriptionRequired">*</span>
+      </label>
+      <textarea id="description" rows="3" formControlName="description" [attr.aria-required]="descriptionRequired"></textarea>
+      <span class="error" *ngIf="showError('description')">Une tâche haute priorité doit être décrite.</span>
     </div>
 
     <div class="grid grid-2">
@@ -24,10 +27,13 @@
         </select>
       </div>
 
-      <div class="field" [class.invalid]="showError('dueDate')">
+      <div class="field" [class.invalid]="showError('dueDate') || showUrgentError">
         <label for="dueDate">Échéance</label>
         <input id="dueDate" type="date" formControlName="dueDate" />
         <span class="error" *ngIf="showError('dueDate')">L'échéance est requise.</span>
+        <span class="error" *ngIf="showUrgentError">
+          Priorité haute : échéance sous {{ urgentMaxDays }} jours maximum.
+        </span>
       </div>
     </div>
 

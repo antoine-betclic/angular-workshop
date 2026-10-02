@@ -7,44 +7,21 @@ import {
   linkedSignal,
   signal,
 } from '@angular/core';
-import {
-  FormField,
-  form,
-  minLength,
-  required,
-  submit,
-} from '@angular/forms/signals';
+import { FormField, form, submit } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
-import {
-  PRIORITIES,
-  Priority,
-  Todo,
-  TodoDraft,
-} from '@angular-workshop/shared/models';
+import { PRIORITIES, Todo, TodoDraft } from '@angular-workshop/shared/models';
 import { TagsStore } from '../../core/tags-store';
 import { TodoStore } from '../../store/todo-store';
+import {
+  EMPTY_TODO_FORM,
+  TodoFormModel,
+  todoFormSchema,
+} from './todo-form-schema';
 import { PRIORITY_LABELS } from './todo-item';
-
-/** Modèle du formulaire : jamais de `null`/`undefined` dans un Signal Form. */
-interface TodoFormModel {
-  title: string;
-  description: string;
-  priority: Priority;
-  dueDate: string;
-  done: boolean;
-}
-
-const EMPTY_MODEL: TodoFormModel = {
-  title: '',
-  description: '',
-  priority: 'medium',
-  dueDate: '',
-  done: false,
-};
 
 /**
  * Signal Forms : le modèle est un `WritableSignal`, `form()` en dérive l'arbre de champs,
- * la validation est déclarée dans un schéma, `[formField]` lie chaque contrôle.
+ * la validation est déclarée dans un schéma (`todo-form-schema.ts`), `[formField]` lie chaque contrôle.
  * En édition, la tâche résolue arrive par `input()` (withComponentInputBinding) et
  * `linkedSignal` réinitialise le modèle à partir d'elle — sans `effect`.
  */
@@ -77,14 +54,10 @@ export class TodoForm {
           dueDate: todo.dueDate,
           done: todo.done,
         }
-      : EMPTY_MODEL;
+      : EMPTY_TODO_FORM;
   });
 
-  protected readonly todoForm = form(this.model, (s) => {
-    required(s.title, { message: 'Le titre est requis' });
-    minLength(s.title, 3, { message: '3 caractères minimum' });
-    required(s.dueDate, { message: "L'échéance est requise" });
-  });
+  protected readonly todoForm = form(this.model, todoFormSchema);
 
   /** Les tags (string[]) sont gérés hors du form : `[formField]` ne binde que des booléens sur une checkbox. */
   protected readonly selectedTags = linkedSignal<string[]>(

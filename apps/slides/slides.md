@@ -1743,10 +1743,1073 @@ Statistiques d'usage envoyées à Google par défaut : <code>--no-usage-statisti
 </div>
 
 ---
+layout: two-cols
+layoutClass: gap-8
+class: dense
+---
+
+# Rappel : le web en 20 ans
+
+<div class="timeline">
+  <div v-click class="tl"><b>Avant 2004</b> pages HTML rendues par le serveur, chaque clic recharge la page</div>
+  <div v-click class="tl"><b>2004–2006</b> <b>AJAX</b> : la page se met à jour sans rechargement (Gmail, Google Maps)</div>
+  <div v-click class="tl"><b>2010</b> <b>AngularJS</b> : le navigateur devient une application (SPA)</div>
+  <div v-click class="tl"><b>2016–2020</b> SPA partout, bundles JS de plusieurs Mo</div>
+  <div v-click class="tl now"><b>2023–2026</b> retour du HTML rendu serveur, <b>hydraté</b> côté client (SSR)</div>
+</div>
+
+<v-click>
+
+<div class="mt-4 p-2 rounded bg-slate-500/10 border border-slate-500/40 text-sm flex items-center gap-3">
+<img src="/logo-nx.svg" alt="Logo Nx" class="h-9 shrink-0" />
+<div>Le dépôt : un <b>monorepo Nx</b>, deux apps + API, une version d'Angular, <code>libs/shared</code> minimal, frontières par tags.</div>
+</div>
+
+</v-click>
+
+::right::
+
+<h3 class="flex items-center gap-2"><img src="/logo-angular.gif" alt="Logo Angular" class="h-8" /> Et Angular dans tout ça</h3>
+
+<div class="timeline">
+  <div v-click class="tl"><b>2010</b> AngularJS · dirty checking, <code>$scope</code></div>
+  <div v-click class="tl"><b>2016 · v2</b> réécriture TypeScript : <b>zone.js</b>, NgModules, RxJS</div>
+  <div v-click class="tl"><b>2020–2022 · v9–15</b> Ivy, standalone, <code>inject()</code></div>
+  <div v-click class="tl"><b>2023–2024 · v16–19</b> <b>signals</b>, <code>@if/@for/@defer</code>, SSR + hydratation</div>
+  <div v-click class="tl now"><b>2025–2026 · v20–22</b> <b>zoneless</b>, <code>httpResource</code>, Signal Forms, OnPush par défaut</div>
+</div>
+
+<v-click>
+
+<div class="mt-4 p-2 rounded bg-sky-500/10 border border-sky-500/40 text-sm">
+Deux ruptures : <b>2016</b> (zone.js + RxJS) et <b>2023–2026</b> (signals + zoneless). Le reste est incrémental.
+</div>
+
+</v-click>
+
+<style>
+.timeline { display: grid; gap: 0.4rem; margin-top: 0.6rem; }
+.tl { border-left: 4px solid #dd0031; padding: 0.3rem 0.7rem; background: rgba(255,255,255,0.04); border-radius: 0 8px 8px 0; }
+.tl.now { border-left-color: #22c55e; background: rgba(34,197,94,0.08); }
+</style>
+
+<!--
+Rappel de la session 1, 2 minutes max. Chaque génération répond à une contrainte de son époque : AngularJS = « faire une appli dans le navigateur », Angular 22 = « le faire sans envoyer 2 Mo de JS ».
+-->
+
+---
+layout: two-cols
+layoutClass: gap-8
+class: dense
+---
+
+# RxJS et NgRx : optionnels
+
+On peut écrire une app Angular complète **sans écrire une ligne de RxJS ni installer NgRx**.
+
+<h3 class="flex items-center gap-2"><img src="/logo-rxjs.png" alt="Logo RxJS" class="h-8" /> RxJS</h3>
+
+<v-clicks>
+
+- Une librairie de **flux asynchrones** (`Observable`) : réponses HTTP, événements utilisateur, WebSocket, timers.
+- Sa force : **composer et annuler** (`switchMap`, `debounceTime`, `combineLatest`). Ex. : une recherche qui annule la requête précédente à chaque frappe.
+- Encore présente **sous le capot** (`HttpClient`, router, Reactive Forms), mais en 2026 `signal`, `computed` et `httpResource` couvrent la majorité des besoins.
+
+</v-clicks>
+
+::right::
+
+<div class="mt-27"></div>
+
+<h3 class="flex items-center gap-2"><img src="/logo-ngrx.svg" alt="Logo NgRx" class="h-8" /> NgRx</h3>
+
+<v-clicks>
+
+- Une librairie **tierce** (pas l'équipe Angular) de gestion d'**état global**, inspirée de Redux.
+- Utile quand **beaucoup de composants** partagent et modifient le même état, et qu'on veut **tracer** chaque changement (Redux DevTools).
+- Sinon, un **service + des signals** suffit. `@ngrx/signals` est l'entre-deux : même idée de store, sans actions ni reducers.
+
+</v-clicks>
+
+<v-click>
+
+<div class="mt-4 p-2 rounded bg-amber-500/10 border border-amber-500/40 text-sm">
+RxJS répond à « <b>comment</b> enchaîner de l'asynchrone ? », NgRx à « <b>où</b> vit l'état partagé ? ». Deux questions différentes, deux outils optionnels.
+</div>
+
+</v-click>
+
+<!--
+Idée reçue fréquente : « Angular = RxJS + NgRx ». Faux : RxJS est une dépendance d'Angular (HttpClient renvoie un Observable), mais on n'est pas obligé d'en écrire ; NgRx n'a jamais fait partie d'Angular.
+
+Bonne règle : commencer avec des signals dans un service, passer à un store quand l'état partagé devient difficile à suivre. Garder RxJS pour les flux d'événements (recherche, websocket, polling).
+-->
+
+---
 layout: section
 ---
 
 # 5. Formulaires
+
+---
+layout: two-cols
+layoutClass: gap-8
+class: code-lg
+---
+
+# Le fil rouge : « Ajouter une recette »
+
+Le formulaire de la **Smart Recipe Box** (phase 5 de l'AI Tutor), écrit deux fois : Reactive Forms, puis Signal Forms.
+
+<v-clicks>
+
+- **Nom** : requis.
+- **Description** : libre.
+- **Email de l'auteur** : requis, au format email.
+- **Soumission** : `RecipeService.addRecipe()`, puis remise à zéro.
+
+</v-clicks>
+
+::right::
+
+<div class="mt-16">
+
+```ts {all|2|3|4|all}{at:1}
+interface RecipeDraft {
+  name: string;
+  description: string;
+  authorEmail: string;
+}
+```
+
+</div>
+
+<div v-click="5" class="mt-6 text-sm opacity-80">
+Version Reactive Forms complète : <code>apps/smart-recipe-app/src/app/recipe-form</code>.<br/>
+Version Signal Forms : c'est l'exercice des modules 18 à 21 du tuteur.
+</div>
+
+<!--
+Un seul exemple pour toute la section : trois champs, deux validateurs, une soumission. Assez petit pour tenir sur une slide, assez riche pour montrer toutes les différences.
+-->
+
+---
+layout: two-cols
+layoutClass: gap-6 !grid-cols-[3fr_2fr]
+class: dense code-lg
+---
+
+# Reactive Forms ① : le `FormGroup`
+
+<!-- surlignage synchronisé avec les puces de droite (clics 1 à 5) -->
+```ts {all|1-3|7|11|13-17|14,16}{at:1}
+import {
+  FormBuilder, ReactiveFormsModule, Validators,
+} from '@angular/forms';
+
+@Component({
+  selector: 'app-recipe-form',
+  imports: [ReactiveFormsModule],
+  templateUrl: './recipe-form.html',
+})
+export class RecipeForm {
+  private readonly fb = inject(FormBuilder).nonNullable;
+
+  protected readonly recipeForm = this.fb.group({
+    name: ['', Validators.required],
+    description: [''],
+    authorEmail: ['', [Validators.required, Validators.email]],
+  });
+}
+```
+
+::right::
+
+<div class="mt-12">
+
+<v-clicks>
+
+- Tout vient de `@angular/forms` : constructeur, directives, validateurs.
+- `ReactiveFormsModule` apporte les directives `formGroup`, `formControlName`, `ngSubmit`.
+- `nonNullable` : sans lui, `reset()` remet les champs à `null`. Typage strict seulement depuis la v14.
+- Le **modèle vit dans le `FormGroup`** : une copie de vos données, pas vos données.
+- Les validateurs sont **attachés à chaque contrôle** : `[valeurInitiale, validateurs]`.
+
+</v-clicks>
+
+</div>
+
+<!--
+Point clé à faire passer : le FormGroup est un objet à part, qui possède sa propre copie de la valeur. Toute la suite (patchValue, getRawValue, reset) découle de cette double source de vérité.
+-->
+
+---
+class: dense
+---
+
+# Reactive Forms ② : lier le template
+
+<!-- bloc HTML écrit à la main (pas Shiki) pour pouvoir entourer les attributs avec v-mark -->
+<pre class="slidev-code anno"><code><span class="t">&lt;form</span> <span v-mark="{ at: 1, type: 'circle', color: '#e11d48', padding: 8 }" class="a">[formGroup]</span>=<span class="s">"recipeForm"</span> <span v-mark="{ at: 3, type: 'box', color: '#2563eb', padding: 4 }" class="a">(ngSubmit)</span>=<span class="s">"save()"</span><span class="t">&gt;</span>
+  <span class="t">&lt;input</span> <span v-mark="{ at: 2, type: 'underline', color: '#f59e0b', strokeWidth: 3 }" class="a">formControlName</span>=<span v-mark="{ at: 2, type: 'circle', color: '#f59e0b', padding: 4 }" class="s">"name"</span> <span class="t">/&gt;</span>
+  <span class="t">&lt;textarea</span> <span v-mark="{ at: 2, type: 'underline', color: '#f59e0b', strokeWidth: 3 }" class="a">formControlName</span>=<span class="s">"description"</span><span class="t">&gt;&lt;/textarea&gt;</span>
+  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="s">"email"</span> <span v-mark="{ at: 2, type: 'underline', color: '#f59e0b', strokeWidth: 3 }" class="a">formControlName</span>=<span class="s">"authorEmail"</span> <span class="t">/&gt;</span>
+  <span class="t">&lt;button</span> <span class="a">type</span>=<span class="s">"submit"</span><span class="t">&gt;</span>Ajouter<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;/form&gt;</span></code></pre>
+
+<div class="grid grid-cols-3 gap-4 mt-4 text-sm">
+  <div v-click="1" class="p-3 rounded border-l-4 border-rose-600 bg-rose-500/10">
+    <code>[formGroup]</code> relie la balise <code>&lt;form&gt;</code> à l'objet <code>FormGroup</code> de la classe.
+  </div>
+  <div v-click="2" class="p-3 rounded border-l-4 border-amber-500 bg-amber-500/10">
+    <code>formControlName</code> attend une <b>chaîne</b> : <code>"nmae"</code> compile… puis plante à l'exécution (<i>Cannot find control with name</i>).
+  </div>
+  <div v-click="3" class="p-3 rounded border-l-4 border-blue-600 bg-blue-500/10">
+    <code>(ngSubmit)</code> : la directive intercepte le <code>submit</code> natif, pas de rechargement de page.
+  </div>
+</div>
+
+<!--
+Clic 1 : le lien form ↔ FormGroup. Clic 2 : le maillon faible, des chaînes de caractères que le compilateur ne vérifie pas, même avec strictTemplates. Clic 3 : ngSubmit.
+-->
+
+---
+class: dense
+---
+
+# Reactive Forms ③ : afficher les erreurs
+
+<pre class="slidev-code anno"><code><span class="k">@if</span> (recipeForm.controls.name<span v-mark="{ at: 1, type: 'underline', color: '#e11d48', strokeWidth: 3 }">.touched</span>
+     &amp;&amp; recipeForm.controls.name.<span v-mark="{ at: 2, type: 'circle', color: '#f59e0b', padding: 6 }">hasError('required')</span>) {
+  <span class="t">&lt;p</span> <span class="a">class</span>=<span class="s">"error"</span><span class="t">&gt;</span><span v-mark="{ at: 3, type: 'highlight', color: '#93c5fd' }">Le nom est requis</span><span class="t">&lt;/p&gt;</span>
+}
+<span class="k">@if</span> (recipeForm.controls.authorEmail.hasError(<span v-mark="{ at: 2, type: 'circle', color: '#f59e0b', padding: 6 }">'email'</span>)) {
+  <span class="t">&lt;p</span> <span class="a">class</span>=<span class="s">"error"</span><span class="t">&gt;</span><span v-mark="{ at: 3, type: 'highlight', color: '#93c5fd' }">Email invalide</span><span class="t">&lt;/p&gt;</span>
+}</code></pre>
+
+<div class="grid grid-cols-3 gap-4 mt-4 text-sm">
+  <div v-click="1" class="p-3 rounded border-l-4 border-rose-600 bg-rose-500/10">
+    <code>touched</code>, <code>invalid</code>, <code>errors</code> : de <b>simples propriétés</b>, pas des signals. Pour un <code>computed()</code>, il faut passer par <code>valueChanges</code> + <code>toSignal()</code>.
+  </div>
+  <div v-click="2" class="p-3 rounded border-l-4 border-amber-500 bg-amber-500/10">
+    Les erreurs sont identifiées par une <b>clé chaîne</b> (<code>'required'</code>, <code>'email'</code>) : aucune vérification à la compilation.
+  </div>
+  <div v-click="3" class="p-3 rounded border-l-4 border-blue-600 bg-blue-500/10">
+    Le <b>message</b> vit dans le template, loin du validateur : à réécrire dans chaque formulaire.
+  </div>
+</div>
+
+<!--
+Le « touched && hasError » est le motif que tout le monde a copié-collé pendant dix ans. Retenir les trois défauts : pas réactif au sens signal, clés en chaînes, message séparé de la règle.
+-->
+
+---
+layout: two-cols
+layoutClass: gap-6 !grid-cols-[3fr_2fr]
+class: dense code-lg
+---
+
+# Reactive Forms ④ : soumettre
+
+```ts {all|2-5|3|6|7-9|10}{at:1}
+protected save(): void {
+  if (this.recipeForm.invalid) {
+    this.recipeForm.markAllAsTouched();
+    return;
+  }
+  const draft = this.recipeForm.getRawValue();
+  this.recipes.addRecipe({
+    ...draft, imgUrl: '', isFavorite: false, ingredients: [],
+  });
+  this.recipeForm.reset();
+}
+```
+
+::right::
+
+<div class="mt-12">
+
+<v-clicks>
+
+- La garde de validité est **manuelle**.
+- `markAllAsTouched()` : sinon les erreurs, conditionnées par `touched`, restent invisibles.
+- `getRawValue()` : on **recopie** la valeur hors du formulaire (`value` omettrait les champs désactivés).
+- Le service reçoit un objet métier reconstruit à la main.
+- `reset()` revient aux valeurs initiales… grâce à `nonNullable`.
+
+</v-clicks>
+
+</div>
+
+<!--
+Cinq lignes de plomberie avant d'arriver au métier. Rien de faux, mais tout est à la charge du développeur : c'est ce que Signal Forms va absorber.
+-->
+
+---
+layout: center
+class: text-center
+---
+
+# Et si le formulaire n'était qu'une **vue sur un signal** ?
+
+<div v-click class="mt-6 text-lg opacity-80">
+<code>@angular/forms/signals</code> : expérimental en v21, <b>stable en v22</b>.
+</div>
+
+---
+layout: two-cols
+layoutClass: gap-6 !grid-cols-[3fr_2fr]
+class: dense code-lg
+---
+
+# Signal Forms ① : le modèle est un signal
+
+<!-- surlignage synchronisé avec les puces de droite (clics 1 à 4) -->
+```ts {all|3-7|10-12|13|11,13}{at:1}
+import { form } from '@angular/forms/signals';
+
+interface RecipeDraft {
+  name: string;
+  description: string;
+  authorEmail: string;
+}
+
+export class AddRecipe {
+  protected readonly model = signal<RecipeDraft>({
+    name: '', description: '', authorEmail: '',
+  });
+  protected readonly recipeForm = form(this.model);
+}
+```
+
+::right::
+
+<div class="mt-12">
+
+<v-clicks>
+
+- On type **ses données**, pas son formulaire. Tout est initialisé : `''`, `0`, `false` (on reparle de `null` plus loin).
+- `model` : un `WritableSignal` ordinaire, **unique source de vérité**.
+- `form(model)` renvoie un **arbre de champs** de même forme : `recipeForm.name`, `recipeForm.authorEmail`… typé de bout en bout.
+- Aucune copie : saisir écrit dans `model`, `model.set()` met à jour les inputs. Adieu `patchValue` et `getRawValue`.
+
+</v-clicks>
+
+</div>
+
+<!--
+Le renversement : en Reactive Forms le formulaire possède la valeur ; ici c'est le signal qui la possède et le formulaire n'est qu'une vue dessus.
+-->
+
+---
+layout: two-cols
+layoutClass: gap-6 !grid-cols-[3fr_2fr]
+class: dense code-lg
+---
+
+# Signal Forms ② : le schéma
+
+<!-- chaque étape de magic-move consomme un clic (clics 1 à 3), les puces suivent -->
+````md magic-move {lines: true}
+```ts
+import { form } from '@angular/forms/signals';
+
+protected readonly recipeForm = form(this.model);
+```
+
+```ts
+import { form } from '@angular/forms/signals';
+
+protected readonly recipeForm = form(this.model, (s) => {
+});
+```
+
+```ts
+import {
+  form, required,
+} from '@angular/forms/signals';
+
+protected readonly recipeForm = form(this.model, (s) => {
+  required(s.name, { message: 'Le nom est requis' });
+});
+```
+
+```ts
+import {
+  email, form, required,
+} from '@angular/forms/signals';
+
+protected readonly recipeForm = form(this.model, (s) => {
+  required(s.name, { message: 'Le nom est requis' });
+  required(s.authorEmail, { message: "L'email est requis" });
+  email(s.authorEmail, { message: 'Email invalide' });
+});
+```
+````
+
+::right::
+
+<div class="mt-12">
+
+<div v-click="1">
+
+- 2ᵉ argument : une **fonction de schéma**, exécutée une seule fois. Elle *déclare* des règles, elle ne lit pas de valeurs.
+
+</div>
+<div v-click="2">
+
+- `s` est un **chemin** dans le modèle (`s.name`) : la règle et son **message** vivent ensemble.
+
+</div>
+<div v-click="3">
+
+- Les validateurs sont des **fonctions** importées : `required`, `email`, `minLength`, `pattern`… composables, réutilisables avec `schema()`.
+
+</div>
+
+<div v-click="4" class="mt-4 p-3 rounded bg-pink-500/10 border border-pink-500/40 text-sm">
+Au-delà : <code>validate()</code> (règle maison), <code>applyWhen()</code> (conditionnel), <code>validateHttp()</code> (asynchrone), <code>disabled()</code> / <code>hidden()</code> (état des champs).
+</div>
+
+</div>
+
+<!--
+Magic-move : on part de form(this.model) et on ajoute le schéma ligne par ligne. Insister sur « s n'est pas une valeur » : c'est un chemin, la fonction ne s'exécute qu'une fois à la création du formulaire.
+-->
+
+---
+class: dense
+---
+
+# Signal Forms ③ : lier le template
+
+<pre class="slidev-code anno"><code><span class="t">&lt;form</span> <span v-mark="{ at: 3, type: 'box', color: '#2563eb', padding: 4 }" class="a">(submit)</span>=<span class="s">"save($event)"</span><span class="t">&gt;</span>
+  <span class="t">&lt;input</span> <span v-mark="{ at: 1, type: 'circle', color: '#e11d48', padding: 8 }" class="a">[formField]</span>=<span class="s">"<span v-mark="{ at: 2, type: 'underline', color: '#f59e0b', strokeWidth: 3 }">recipeForm.name</span>"</span> <span class="t">/&gt;</span>
+  <span class="t">&lt;textarea</span> <span v-mark="{ at: 1, type: 'circle', color: '#e11d48', padding: 8 }" class="a">[formField]</span>=<span class="s">"<span v-mark="{ at: 2, type: 'underline', color: '#f59e0b', strokeWidth: 3 }">recipeForm.description</span>"</span><span class="t">&gt;&lt;/textarea&gt;</span>
+  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="s">"email"</span> <span v-mark="{ at: 1, type: 'circle', color: '#e11d48', padding: 8 }" class="a">[formField]</span>=<span class="s">"<span v-mark="{ at: 2, type: 'underline', color: '#f59e0b', strokeWidth: 3 }">recipeForm.authorEmail</span>"</span> <span class="t">/&gt;</span>
+  <span class="t">&lt;button</span> <span class="a">type</span>=<span class="s">"submit"</span><span class="t">&gt;</span>Ajouter<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;/form&gt;</span></code></pre>
+
+<div class="grid grid-cols-3 gap-4 mt-3 text-sm">
+  <div v-click="1" class="p-3 rounded border-l-4 border-rose-600 bg-rose-500/10">
+    <code>[formField]</code> (<code>imports: [FormField]</code>) : <b>une seule directive</b> pour tous les contrôles. Elle synchronise aussi <code>required</code>, <code>disabled</code>, <code>readonly</code> et marque <code>touched</code> au blur.
+  </div>
+  <div v-click="2" class="p-3 rounded border-l-4 border-amber-500 bg-amber-500/10">
+    On passe une <b>référence typée</b>, pas une chaîne : <code>recipeForm.nmae</code> ne compile pas.
+  </div>
+  <div v-click="3" class="p-3 rounded border-l-4 border-blue-600 bg-blue-500/10">
+    Pas de directive de formulaire obligatoire : un <code>(submit)</code> natif suffit (ou <code>[formRoot]</code>, plus loin).
+  </div>
+</div>
+
+<div v-click="4" class="mt-3 p-2 rounded bg-red-500/10 border border-red-500/40 text-sm">
+⚠️ L'AI Tutor, écrit pour la v21 expérimentale, enseigne <code>Field</code> + <code>[field]</code>. En v22, <code>Field</code> n'est plus qu'un <b>type</b> : <code>TS2693: 'Field' only refers to a type</code>. Directive : <code>FormField</code>, attribut : <code>[formField]</code>.
+</div>
+
+<!--
+Clic 1 : une directive unique au lieu de formControlName/formControl/ngModel. Clic 2 : le gain du typage, comparer avec le "nmae" de la slide Reactive. Clic 3 : (submit) natif. Clic 4 : piège vérifié sur le dépôt, le code du tuteur ne compile pas en v22.
+-->
+
+---
+class: dense
+---
+
+# Signal Forms ④ : l'état des champs
+
+<pre class="slidev-code anno"><code><span class="k">@if</span> (<span v-mark="{ at: 1, type: 'circle', color: '#e11d48', padding: 6 }">recipeForm.name()</span>.<span v-mark="{ at: 2, type: 'underline', color: '#f59e0b', strokeWidth: 3 }">touched()</span> &amp;&amp; recipeForm.name().<span v-mark="{ at: 2, type: 'underline', color: '#f59e0b', strokeWidth: 3 }">invalid()</span>) {
+  <span class="k">@for</span> (error <span class="k">of</span> recipeForm.name().<span v-mark="{ at: 3, type: 'box', color: '#2563eb', padding: 4 }">errors()</span>; <span class="k">track</span> error.kind) {
+    <span class="t">&lt;p</span> <span class="a">class</span>=<span class="s">"error"</span><span class="t">&gt;</span><span v-mark="{ at: 4, type: 'highlight', color: '#93c5fd' }"><span v-pre>{{ error.message }}</span></span><span class="t">&lt;/p&gt;</span>
+  }
+}
+<span class="t">&lt;button</span> <span class="a">type</span>=<span class="s">"submit"</span> <span class="a">[disabled]</span>=<span class="s">"<span v-mark="{ at: 5, type: 'circle', color: '#16a34a', padding: 6 }">recipeForm()</span>.submitting()"</span><span class="t">&gt;</span>Ajouter<span class="t">&lt;/button&gt;</span></code></pre>
+
+<div class="grid grid-cols-3 gap-3 mt-3 text-sm">
+  <div v-click="1" class="p-2 rounded border-l-4 border-rose-600 bg-rose-500/10">
+    <b>Appeler</b> le champ donne son état : <code>recipeForm.name</code> = structure, <code>recipeForm.name()</code> = état.
+  </div>
+  <div v-click="2" class="p-2 rounded border-l-4 border-amber-500 bg-amber-500/10">
+    <code>touched()</code>, <code>dirty()</code>, <code>invalid()</code>, <code>pending()</code> : des <b>signals</b>. Utilisables dans un <code>computed()</code>, zéro souscription.
+  </div>
+  <div v-click="3" class="p-2 rounded border-l-4 border-blue-600 bg-blue-500/10">
+    <code>errors()</code> : un tableau d'objets typés. <code>error.kind</code> sert de clé de <code>track</code>.
+  </div>
+  <div v-click="4" class="p-2 rounded border-l-4 border-sky-400 bg-sky-400/10">
+    <code>error.message</code> : le message déclaré <b>dans le schéma</b>, pas recopié dans le template.
+  </div>
+  <div v-click="5" class="p-2 rounded border-l-4 border-green-600 bg-green-500/10">
+    <code>recipeForm()</code> : l'état <b>racine</b>. <code>invalid()</code>, <code>dirty()</code>, <code>submitting()</code>…
+  </div>
+</div>
+
+<!--
+Règle mnémotechnique : sans parenthèses on navigue dans la structure, avec parenthèses on lit l'état. On oublie les parenthèses une fois, puis plus jamais.
+-->
+
+---
+layout: two-cols
+layoutClass: gap-6 !grid-cols-[3fr_2fr]
+class: dense code-lg
+---
+
+# Signal Forms ⑤ : soumettre
+
+```ts {all|2|3|4-7|8}{at:1}
+protected async save(event: Event): Promise<void> {
+  event.preventDefault();
+  await submit(this.recipeForm, async () => {
+    this.recipes.addRecipe({
+      ...this.model(),
+      imgUrl: '', isFavorite: false, ingredients: [],
+    });
+    this.recipeForm().reset(EMPTY_DRAFT);
+  });
+}
+```
+
+::right::
+
+<div class="mt-12">
+
+<v-clicks>
+
+- `preventDefault()` : sans directive de formulaire, on bloque soi-même le rechargement de la page.
+- `submit()` marque tous les champs `touched`, n'exécute l'action **que si le formulaire est valide** et expose `submitting()` pendant l'`await`.
+- `this.model()` : la valeur **est déjà là**, typée. Rien à recopier.
+- `reset(valeur)` (v22) efface `touched`/`dirty` **et** remet les valeurs. Le tuteur fait `reset()` + `model.set(…)` : même effet.
+
+</v-clicks>
+
+</div>
+
+<!--
+Comparer avec la slide Reactive ④ : la garde de validité et markAllAsTouched ont disparu, absorbées par submit().
+-->
+
+---
+layout: two-cols
+layoutClass: gap-6 !grid-cols-[3fr_2fr]
+class: dense code-lg
+---
+
+# Bonus v22 : `[formRoot]`
+
+```ts {all|4-9|5-8|6-7}{at:1}
+protected readonly recipeForm = form(
+  this.model,
+  (s) => { /* required, email… */ },
+  { submission: {
+    action: async (recipe) => {
+      this.recipes.addRecipe(toRecipe(recipe().value()));
+      recipe().reset(EMPTY_DRAFT);
+    },
+  } },
+);
+```
+
+<pre v-click="4" class="slidev-code anno"><code><span class="t">&lt;form</span> <span v-mark="{ at: 4, type: 'circle', color: '#e11d48', padding: 8 }" class="a">[formRoot]</span>=<span class="s">"recipeForm"</span><span class="t">&gt;</span> <span class="c">&lt;!-- plus de (submit) ni de save() --&gt;</span></code></pre>
+
+::right::
+
+<div class="mt-12">
+
+<v-clicks>
+
+- Soumission **déclarée avec le formulaire**, plus dans une méthode.
+- `action` : seulement si valide, `submitting()` vrai pendant ; `onInvalid` en option.
+- Reçoit l'arbre soumis : `recipe().value()`, `recipe().reset()`.
+- `FormRoot` = `novalidate` + `preventDefault()` + `submit()`.
+
+</v-clicks>
+
+</div>
+
+<!--
+Stable depuis la v22 (@publicApi 22.0). Pratique pour les formulaires réutilisables : la logique de soumission voyage avec le formulaire. toRecipe() est un simple helper qui complète imgUrl, isFavorite et ingredients.
+-->
+
+---
+layout: center
+class: text-center
+---
+
+# Trois questions du terrain
+
+<v-clicks>
+
+<div class="text-xl mt-6">Pourquoi éviter <code>null</code> et <code>undefined</code> dans le modèle ?</div>
+<div class="text-xl mt-4">Une règle qui ne s'applique que <b>sous condition</b> ?</div>
+<div class="text-xl mt-4">Une règle qui dépend d'<b>un autre champ</b> ?</div>
+
+</v-clicks>
+
+<div v-click class="mt-10 text-sm opacity-70">
+Exemples tirés du dépôt : <code>todo-zoneless/…/todo-form-schema.ts</code> et son équivalent Reactive dans <code>todo-zone</code>, chacun avec ses tests.
+</div>
+
+<!--
+On quitte le fil rouge « recette » pour le code réel des deux apps todo : les règles ajoutées sont testées des deux côtés et visibles en démo (/todos/new).
+-->
+
+---
+layout: two-cols
+layoutClass: gap-6 !grid-cols-[3fr_2fr]
+class: dense
+---
+
+# `undefined` : le modèle **est** la structure
+
+<!-- bloc écrit à la main (pas Shiki) pour entourer le `?`, le `| null` et le `undefined` -->
+<pre class="slidev-code anno tight"><code><span class="k">interface</span> RecipeDraft {
+  name: <span class="t">string</span>;
+  notes<span v-mark="{ at: 1, type: 'circle', color: '#e11d48', padding: 6 }" class="a">?</span>: <span class="t">string</span>;
+  author: <span class="t">Author</span> <span v-mark="{ at: 2, type: 'circle', color: '#f59e0b', padding: 6 }" class="a">| null</span>;
+}
+<span class="k">const</span> model = signal&lt;RecipeDraft&gt;({ name: <span class="s">''</span>, author: <span class="k">null</span> });
+<span class="k">const</span> recipeForm = form(model);
+<span v-mark="{ at: 1, type: 'underline', color: '#e11d48', strokeWidth: 3 }">recipeForm.notes</span>          <span class="c">// undefined : aucun champ</span>
+<span v-mark="{ at: 2, type: 'underline', color: '#f59e0b', strokeWidth: 3 }">recipeForm.author.name</span>    <span class="c">// undefined : aucun sous-champ</span>
+<span class="c">// même initialisé, écrire undefined supprime le champ</span>
+<span class="k">const</span> notesField = recipeForm.notes!;
+model.update(m =&gt; ({ ...m, notes: <span v-mark="{ at: 3, type: 'circle', color: '#2563eb', padding: 6 }" class="k">undefined</span> }));
+<span v-mark="{ at: 3, type: 'underline', color: '#2563eb', strokeWidth: 3 }">notesField().value()</span>      <span class="c">// 💥 NG01902 : champ orphelin</span></code></pre>
+
+::right::
+
+<div class="mt-12">
+
+<div v-click="1">
+
+- `?` = « peut être `undefined` » = **le champ n'existe pas** : la structure du formulaire est *dérivée* du modèle, rien à binder.
+
+</div>
+<div v-click="2">
+
+- `null` pour un **objet entier** : pas de sous-champs non plus.
+
+</div>
+<div v-click="3">
+
+- Écrire `undefined` plus tard : le champ disparaît, une référence conservée lève **NG01902**.
+
+</div>
+
+<div v-click="4" class="mt-4 p-3 rounded bg-green-500/10 border border-green-500/40 text-sm">
+<b>Règle : tout initialiser.</b><br/>
+<code>{ name: '', notes: '', author: { name: '', email: '' } }</code><br/>
+<span class="opacity-75">Chaque point est vérifié dans <code>signal-forms-model.spec.ts</code>.</span>
+</div>
+
+</div>
+
+<!--
+Clic 1 : une propriété optionnelle. Pour Signal Forms, undefined ne veut pas dire « vide » mais « absent » : pas de recipeForm.notes, donc pas de [formField].
+Clic 2 : même chose pour un objet entier à null : la tentation de form<Draft | null>(signal(null)) pour un formulaire de création. Réponse de la doc : un objet aux feuilles vides (EMPTY_DRAFT).
+Clic 3 : écrire undefined après coup orpheline le champ (erreur NG01902, documentée sur angular.dev/errors/NG01902).
+Clic 4 : les tests du dépôt prouvent chaque ligne de cette slide sur Angular 22.1 : « vérifier au lieu de deviner ».
+-->
+
+---
+class: dense
+---
+
+# `null` : seulement si le contrôle le comprend
+
+<div class="text-sm opacity-75 -mt-2 mb-2">La valeur « vide » du modèle est celle que le contrôle sait afficher et produire.</div>
+
+<table style="font-size: 0.85em">
+  <thead>
+    <tr><th>Contrôle</th><th>Vide =</th><th>Type du modèle</th><th>Ce qui se passe sinon</th></tr>
+  </thead>
+  <tbody>
+    <tr v-click="1"><td><code>&lt;input type="text"&gt;</code>, <code>&lt;textarea&gt;</code></td><td><code>''</code></td><td><code>string</code></td><td><code>null</code> → affiché <code>''</code> + avertissement <b>NG01921</b></td></tr>
+    <tr v-click="2"><td><code>&lt;input type="number"&gt;</code></td><td><code>null</code></td><td><code>number | null</code></td><td>vidé → <code>null</code>, <b>même si le modèle est typé <code>number</code></b></td></tr>
+    <tr v-click="3"><td><code>&lt;input type="date"&gt;</code></td><td><code>null</code> ou <code>''</code></td><td><code>Date | null</code> ou chaîne ISO</td><td><code>TodoFormModel.dueDate</code> reste la chaîne de l'input</td></tr>
+    <tr v-click="4"><td><code>&lt;input type="checkbox"&gt;</code></td><td><code>false</code></td><td><code>boolean</code></td><td>—</td></tr>
+    <tr v-click="5"><td>contrôle custom « atomique »</td><td><code>null</code></td><td><code>Location | null</code></td><td>OK si le contrôle ne lit jamais <code>lat</code> / <code>lng</code> séparément</td></tr>
+  </tbody>
+</table>
+
+<div class="grid grid-cols-2 gap-4 mt-3 text-sm">
+  <div v-click="6" class="p-3 rounded border-l-4 border-amber-500 bg-amber-500/10">
+    <code>required()</code> juge vides <code>''</code>, <code>null</code>, <code>undefined</code>, <code>false</code> et <code>NaN</code>, <b>pas <code>0</code></b> : une case requise doit être cochée, une quantité à 0 est valide.
+  </div>
+  <div v-click="7" class="p-3 rounded border-l-4 border-blue-600 bg-blue-500/10">
+    <b>Modèle de formulaire ≠ modèle métier</b> : <code>EMPTY_TODO_FORM</code> pour créer, <code>linkedSignal</code> pour éditer, conversion vers <code>TodoDraft</code> à la soumission.
+  </div>
+</div>
+
+<!--
+Les lignes 1 et 2 viennent du code source de FormField (signals.mjs) et sont vérifiées par signal-forms-model.spec.ts : un input number vidé écrit null même dans un modèle typé number, donc le type honnête est number | null.
+Date : en v22, [formField] sait lier un Date | null (valueAsDate) ou une chaîne. Le dépôt garde la chaîne YYYY-MM-DD, comme le modèle métier.
+Clic 6 : la fonction isEmpty du framework. Clic 7 : recommandation de la doc « Designing your form model ».
+-->
+
+---
+layout: two-cols
+layoutClass: gap-6 !grid-cols-[3fr_2fr]
+class: dense code-lg
+---
+
+# Validation conditionnelle : `when`
+
+```ts {all|1|5-8|6|5-8}{at:1}
+export const todoFormSchema = schema<TodoFormModel>((s) => {
+  required(s.title, { message: 'Le titre est requis' });
+  required(s.dueDate, { message: "L'échéance est requise" });
+
+  required(s.description, {
+    when: ({ valueOf }) => valueOf(s.priority) === 'high',
+    message: 'Une tâche haute priorité doit être décrite',
+  });
+});
+```
+
+<pre class="slidev-code anno"><code><span class="t">&lt;label&gt;</span>Description
+  <span class="k">@if</span> (todoForm.description().<span v-mark="{ at: 4, type: 'circle', color: '#e11d48', padding: 6 }">required()</span>) { <span class="t">&lt;span&gt;</span>*<span class="t">&lt;/span&gt;</span> }
+<span class="t">&lt;/label&gt;</span>
+<span class="t">&lt;textarea</span> <span v-mark="{ at: 4, type: 'underline', color: '#e11d48', strokeWidth: 3 }" class="a">[formField]</span>=<span class="s">"todoForm.description"</span><span class="t">&gt;&lt;/textarea&gt;</span></code></pre>
+
+::right::
+
+<div class="mt-12">
+
+<v-clicks>
+
+- `schema()` sort les règles du composant : testables seules (`todo-form-schema.spec.ts`).
+- Même `required()`, plus une option `when` : la règle ne s'applique que si elle renvoie `true`.
+- `valueOf(s.priority)` lit **un autre champ**, comme un signal : repasser en priorité basse retire la règle **et** son erreur, sans code.
+- `required` reste une **métadonnée** : `description().required()` affiche l'astérisque et `[formField]` met à jour l'attribut `required` du `<textarea>` (testé).
+
+</v-clicks>
+
+</div>
+
+<!--
+Code réel : apps/todo-zoneless/src/app/features/todos/todo-form-schema.ts.
+Démo : /todos/new sur le port 4201, passer la priorité à « Haute » → l'astérisque apparaît, le bouton Enregistrer se désactive.
+Préférer required({ when }) à un validate() maison : on garde la métadonnée required, utile pour l'accessibilité.
+-->
+
+---
+layout: two-cols
+layoutClass: gap-6 !grid-cols-[3fr_2fr]
+class: dense code-lg
+---
+
+# Conditionnel : trois outils
+
+<!-- deux étapes de magic-move (clics 1 et 2), les blocs de droite suivent -->
+````md magic-move {lines: true}
+```ts
+// Une règle, une condition
+required(s.description, {
+  when: ({ valueOf }) => valueOf(s.priority) === 'high',
+});
+```
+
+```ts
+// Un bloc de règles, une condition
+const urgent = schema<TodoFormModel>((t) => {
+  required(t.description, { message: 'Décrivez la tâche' });
+  maxLength(t.title, 40, { message: '40 caractères max.' });
+});
+
+applyWhen(
+  s,
+  ({ value }) => value().priority === 'high',
+  urgent,
+);
+```
+
+```ts
+// Le champ sort de la validation
+hidden(s.card, {
+  when: ({ valueOf }) => valueOf(s.method) !== 'card',
+});
+hidden(s.bank, {
+  when: ({ valueOf }) => valueOf(s.method) !== 'bank',
+});
+disabled(s.coupon, {
+  when: ({ valueOf }) => valueOf(s.total) < 50,
+});
+```
+````
+
+::right::
+
+<div class="mt-12">
+
+- `when` : **une** règle, **une** condition. Accepté par tous les validateurs.
+
+<div v-click="1">
+
+- `applyWhen` : **un bloc** de règles sous une condition. Le bloc est un `schema()` réutilisable.
+
+</div>
+<div v-click="2">
+
+- `hidden` / `disabled` : le champ **ne compte plus** dans la validité, `dirty` et `touched` du parent. Template : `@if (!checkout.card().hidden())`.
+
+</div>
+
+<div v-click="3" class="mt-4 p-3 rounded bg-pink-500/10 border border-pink-500/40 text-sm">
+Modèle <b>stable</b> : <code>card</code> et <code>bank</code> existent toujours. Changer de moyen de paiement ne perd pas la saisie, une union discriminée si.
+</div>
+
+</div>
+
+<!--
+v22 : hidden et disabled prennent un objet { when }, la forme « fonction directe » est dépréciée.
+Le dernier encadré reprend la doc « Designing your form model » : plutôt que de changer la forme du modèle selon le choix de l'utilisateur, on garde tous les champs et on masque ceux qui ne s'appliquent pas.
+Tous ces extraits ont été compilés et exécutés contre Angular 22.1 avant d'arriver sur la slide.
+-->
+
+---
+layout: two-cols
+layoutClass: gap-6 !grid-cols-[3fr_2fr]
+class: dense code-lg
+---
+
+# Le même besoin en Reactive Forms
+
+```ts {all|3-4|7-11|12|2|all}{at:1}
+ngOnInit(): void {
+  this.subscription.add(
+    this.form.controls.priority.valueChanges
+      .pipe(startWith(this.form.controls.priority.value))
+      .subscribe((priority) => {
+        const description = this.form.controls.description;
+        if (priority === 'high') {
+          description.setValidators(Validators.required);
+        } else {
+          description.clearValidators();
+        }
+        description.updateValueAndValidity();
+      }),
+  );
+}
+```
+
+::right::
+
+<div class="mt-12">
+
+<v-clicks>
+
+- On **écoute un flux** de la priorité. Sans `startWith`, l'état initial (en édition) est faux.
+- On **branche / débranche** à la main. `setValidators` **remplace** tous les validateurs du contrôle (`addValidators` / `removeValidators` depuis la v12.2).
+- Oublier `updateValueAndValidity()` : l'erreur reste périmée jusqu'à la prochaine frappe.
+- Une souscription de plus à libérer dans `ngOnDestroy`.
+- L'astérisque et `aria-required` : `hasValidator(Validators.required)` et un binding manuel.
+
+</v-clicks>
+
+</div>
+
+<!--
+Code réel : apps/todo-zone/src/app/features/todos/todo-form/todo-form.component.ts, testé par todo-form.component.spec.ts.
+Comparer avec la slide précédente : en Signal Forms, la condition est déclarée une fois et le framework recalcule. Ici, c'est de la synchronisation impérative, avec quatre façons de se tromper.
+Piège bonus : un [required] dans le template ajoute un second validateur (directive RequiredValidator). D'où le [attr.aria-required] dans le dépôt.
+-->
+
+---
+layout: two-cols
+layoutClass: gap-6 !grid-cols-[3fr_2fr]
+class: dense code-lg
+---
+
+# Validation croisée : `valueOf`
+
+```ts {all|1|2|5-7|3|all}{at:1}
+validate(s.dueDate, ({ value, valueOf }) => {
+  if (valueOf(s.priority) !== 'high' || value() === '') {
+    return null;
+  }
+  return daysUntil(value()) > URGENT_MAX_DAYS
+    ? { kind: 'urgentTooLate', message: URGENT_MESSAGE }
+    : null;
+});
+```
+
+::right::
+
+<div class="mt-12">
+
+<v-clicks>
+
+- La règle est posée **là où l'utilisateur corrigera** : l'échéance, pas la priorité.
+- `value()` lit ce champ, `valueOf(s.priority)` **un autre** : changer la priorité réévalue l'échéance (testé).
+- Une erreur = `{ kind, message }` : `kind` sert de `track`, `message` s'affiche tel quel.
+- `null` = valide. L'échéance vide reste l'affaire de `required` : une erreur à la fois.
+
+</v-clicks>
+
+<div v-click="5" class="mt-4 p-3 rounded bg-pink-500/10 border border-pink-500/40 text-sm">
+<code>stateOf(s.password).touched()</code> lit l'<b>état</b> d'un autre champ (confirmation de mot de passe). Ne jamais lire la validité du parent : boucle infinie.
+</div>
+
+</div>
+
+<!--
+Code réel : todo-form-schema.ts, règle « priorité haute → échéance sous 7 jours ».
+Démo : /todos/new, échéance dans un mois, priorité moyenne → valide ; passer en « Haute » → l'erreur apparaît sur l'échéance alors qu'on n'y a pas touché. C'est le test « réévalue l'échéance quand c'est l'AUTRE champ qui change ».
+-->
+
+---
+layout: two-cols
+layoutClass: gap-6 !grid-cols-[3fr_2fr]
+class: dense code-lg
+---
+
+# Validation croisée en Reactive Forms
+
+```ts {all|1-3|4-5|9-11|all}{at:1}
+export const urgentDueDateValidator: ValidatorFn = (
+  group: AbstractControl,
+): ValidationErrors | null => {
+  const priority = group.get('priority')?.value;
+  const dueDate = group.get('dueDate')?.value;
+  if (priority !== 'high' || !dueDate) {
+    return null;
+  }
+  return daysUntil(dueDate) > URGENT_MAX_DAYS
+    ? { urgentTooLate: { maxDays: URGENT_MAX_DAYS } }
+    : null;
+};
+```
+
+<pre class="slidev-code anno"><code><span class="t">&lt;span</span> <span class="a">*ngIf</span>=<span class="s">"<span v-mark="{ at: 3, type: 'underline', color: '#e11d48', strokeWidth: 3 }">form.hasError('urgentTooLate')</span> &amp;&amp; …"</span><span class="t">&gt;</span></code></pre>
+
+::right::
+
+<div class="mt-12">
+
+<v-clicks>
+
+- Un validateur de **groupe**, enregistré sur le `FormGroup` : `fb.group({ … }, { validators: … })`.
+- Contrôles retrouvés **par leur nom** : `group.get('priority')` renvoie un `any`, une faute de frappe compile.
+- L'erreur vit sur le **groupe** : `dueDate.errors` reste `null` (testé). Le template doit aller la chercher.
+- La poser sur le contrôle ? `setErrors()` à la main, écrasé à la validation suivante.
+
+</v-clicks>
+
+</div>
+
+<!--
+Code réel : apps/todo-zone/src/app/features/todos/todo-form/todo-form.validators.ts (+ spec).
+Le getter showUrgentError du composant rattache l'erreur du groupe à l'échéance pour l'affichage : c'est exactement le travail que Signal Forms fait pour nous en posant la règle sur s.dueDate.
+-->
+
+---
+layout: two-cols
+layoutClass: gap-6 !grid-cols-[3fr_2fr]
+class: dense code-lg
+---
+
+# Plusieurs champs : `validateTree`
+
+```ts {all|1|2|6-11|all}{at:1}
+validateTree(s, ({ value, fieldTreeOf }) => {
+  const { start, end } = value();
+  if (!start || !end || start <= end) {
+    return null;
+  }
+  return [
+    { kind: 'range', fieldTree: fieldTreeOf(s.start),
+      message: 'Début après la fin' },
+    { kind: 'range', fieldTree: fieldTreeOf(s.end),
+      message: 'Fin avant le début' },
+  ];
+});
+```
+
+::right::
+
+<div class="mt-12">
+
+<v-clicks>
+
+- Posé sur le **parent** (ici la racine `s`) : la règle porte sur un groupe de champs.
+- `value()` = tout le groupe : on raisonne sur l'ensemble.
+- **Plusieurs** erreurs, chacune routée vers un enfant par `fieldTree` : `start` et `end` passent en erreur, le parent reste propre.
+
+</v-clicks>
+
+<div v-click="4" class="mt-4 p-3 rounded bg-pink-500/10 border border-pink-500/40 text-sm">
+<b>Règle de choix</b> (doc Angular) : <code>validate</code> + <code>valueOf</code> si l'erreur appartient à un champ ; <code>validateTree</code> si la logique porte sur un groupe <b>et</b> cible plusieurs enfants.
+</div>
+
+</div>
+
+<!--
+Exemple générique (séjour : date d'arrivée / de départ), compilé et exécuté contre Angular 22.1 : les erreurs arrivent bien sur start et end, et stay().errors() reste vide.
+La doc Angular illustre le même principe avec une ligne de Sudoku : un seul validateur, une erreur par case en double.
+-->
+
+---
+class: code-xl
+---
+
+# La traduction, en un clic
+
+````md magic-move {lines: true}
+```html
+<form [formGroup]="recipeForm" (ngSubmit)="save()">
+  <input formControlName="name" />
+  @if (recipeForm.controls.name.touched
+       && recipeForm.controls.name.hasError('required')) {
+    <p class="error">Le nom est requis</p>
+  }
+  <input type="email" formControlName="authorEmail" />
+  <button type="submit">Ajouter</button>
+</form>
+```
+
+```html
+<form [formRoot]="recipeForm">
+  <input [formField]="recipeForm.name" />
+  @if (recipeForm.name().touched()) {
+    @for (error of recipeForm.name().errors(); track error.kind) {
+      <p class="error">{{ error.message }}</p>
+    }
+  }
+  <input type="email" [formField]="recipeForm.authorEmail" />
+  <button type="submit">Ajouter</button>
+</form>
+```
+````
+
+<!--
+Un clic : le template Reactive se transforme en template Signal (magic-move). Les lignes qui bougent sont exactement celles de la table suivante.
+-->
+
+---
+class: dense
+---
+
+# Table de correspondance
+
+| Reactive Forms | Signal Forms |
+| --- | --- |
+| `fb.group({ … })` | `form(signal({ … }))` |
+| `Validators.required` sur le contrôle | `required(s.name, { message })` dans le schéma |
+| `formControlName="name"` (chaîne) | `[formField]="recipeForm.name"` (typé) |
+| `control.touched` | `field().touched()` (signal) |
+| `hasError('required')` + message dans le template | `field().errors()` → `error.message` |
+| garde `invalid` + `markAllAsTouched()` | `submit()` ou `[formRoot]` |
+| `getRawValue()` | `model()` |
+| `reset()` | `form().reset(valeur)` |
+| `valueChanges` + `setValidators` + `updateValueAndValidity()` | `required(…, { when })`, `applyWhen`, `hidden` |
+| validateur de groupe + `form.hasError()` | `validate` + `valueOf`, `validateTree` |
+| `ControlValueAccessor` | `FormValueControl` (un `model()` suffit) |
+
+<div v-click class="mt-4 text-sm opacity-80">
+Migration au cas par cas : <code>@angular/forms/signals/compat</code> (<code>compatForm</code>, <code>SignalFormControl</code>) fait cohabiter les deux le temps de la transition.
+</div>
+
+<!--
+À garder sous la main pour migrer un formulaire existant. Le gain principal n'est pas la syntaxe : c'est la disparition de la double source de vérité.
+-->
 
 ---
 layout: two-cols
@@ -1851,7 +2914,7 @@ class: dense
 <v-clicks>
 
 - Le **signal est le modèle** : `form(model)`. Pas de double source de vérité.
-- Structure et types **dérivés** du modèle ; pas de `null` (règle du framework).
+- Structure et types **dérivés** du modèle : pas d'`undefined`, `null` seulement si le contrôle le comprend.
 - Le schéma est une fonction : `required(s.x, { when })`, `applyWhen`, `validateAsync` avec `resource`.
 - `field().touched()`, `field().errors()`, `form().invalid()` : tout est signal, tout est réactif, zéro souscription.
 - Pas de `ControlValueAccessor` pour les composants custom.
@@ -1965,13 +3028,14 @@ layout: fact
 ## localhost:4200/todos/new vs localhost:4201/todos/new
 
 <div class="text-base opacity-80 mt-6">
-Même formulaire, deux moteurs : titre de 2 lettres → erreur · bouton désactivé tant que c'est invalide · « Chargement des tags… » (400 ms de latence) · quitter sans enregistrer → guard
+Même formulaire, deux moteurs : titre de 2 lettres → erreur · priorité « Haute » → description requise et échéance sous 7 jours · bouton désactivé tant que c'est invalide · « Chargement des tags… » (400 ms de latence) · quitter sans enregistrer → guard
 </div>
 
 <!--
 Ouvrir les deux apps côte à côte sur /todos/new, puis le code côte à côte :
 - todo-zone : todo-form.component.ts (FormBuilder, Validators, souscriptions) ; le « chargement » des tags est déduit de `tags.length === 0`.
-- todo-zoneless : todo-form.ts (`form(model)`, schéma de validation) ; le template lit `tagsStore.tags.isLoading()`, l'état vient de `httpResource`.
+- todo-zoneless : todo-form.ts (`form(model)`) + todo-form-schema.ts (règles conditionnelle et croisée) ; le template lit `tagsStore.tags.isLoading()`, l'état vient de `httpResource`.
+- todo-zone : mêmes règles en `valueChanges` + `setValidators` et validateur de groupe (todo-form.validators.ts).
 Le comportement est identique à l'écran : c'est tout l'intérêt. La différence est dans la quantité de code et dans ce qu'on n'a plus à gérer.
 -->
 

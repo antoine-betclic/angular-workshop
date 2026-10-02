@@ -11,9 +11,20 @@
     }
   </div>
 
-  <div class="field">
-    <label for="description">Description</label>
+  <div class="field" [class.invalid]="todoForm.description().touched() && todoForm.description().invalid()">
+    <label for="description">
+      Description
+      <!-- métadonnée `required` : suit la condition `when` du schéma (priorité haute) -->
+      @if (todoForm.description().required()) {
+        <span aria-hidden="true">*</span>
+      }
+    </label>
     <textarea id="description" rows="3" [formField]="todoForm.description"></textarea>
+    @if (todoForm.description().touched()) {
+      @for (error of todoForm.description().errors(); track error.kind) {
+        <span class="error">{{ error.message }}</span>
+      }
+    }
   </div>
 
   <div class="grid grid-2">

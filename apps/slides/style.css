@@ -34,3 +34,33 @@
 .slidev-layout table th {
   padding: 0.3em 0.5em;
 }
+
+/* Blocs de code écrits à la main (pas Shiki) pour annoter un attribut précis avec v-mark.
+   Usage : <pre class="slidev-code anno"><code>…<span v-mark="…" class="a">[formField]</span>…</code></pre> */
+/* `pre.anno.slidev-code` l'emporte sur `.dense pre` */
+pre.anno.slidev-code {
+  padding: 0.8em 1.2em !important;
+  line-height: 2.1 !important;
+  font-size: 0.8em !important;
+  white-space: pre;
+}
+.anno .t { color: #4d9375; }
+.anno .a { color: #bd976a; }
+.anno .s { color: #c98a7d; }
+.anno .k { color: #cb7676; }
+.anno .c { color: #758575; font-style: italic; }
+
+/* `class: dense code-lg` : garde titres et puces compacts mais grossit le code (pas-à-pas des formulaires). */
+.code-lg pre.slidev-code {
+  font-size: 0.75em !important;
+  line-height: 1.5 !important;
+}
+/* `class: code-xl` : code pleine largeur, lisible du fond de la salle. */
+.code-xl pre.slidev-code {
+  font-size: 1em !important;
+  line-height: 1.5 !important;
+}
+/* `anno tight` : bloc annoté plus long (≈ 12 lignes) */
+pre.anno.tight.slidev-code {
+  line-height: 1.75 !important;
+}
